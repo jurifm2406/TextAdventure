@@ -1,17 +1,16 @@
 package view
 
 import view.content.Content
-import java.awt.BorderLayout
-import javax.swing.JFrame
+import javax.swing.*
 
 class MainFrame : JFrame() {
     val menuBar = MenuBar()
     val content = Content()
 
     init {
-        add(menuBar, BorderLayout.NORTH)
+        jMenuBar = menuBar
 
-        add(content, BorderLayout.CENTER)
+        add(content)
 
         extendedState = MAXIMIZED_BOTH
         defaultCloseOperation = EXIT_ON_CLOSE
