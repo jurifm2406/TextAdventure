@@ -53,9 +53,9 @@ point marked with ? considered nice to have but optional
 
 
 ## Roadmap
-- UI
-- Mapgeneration
-- Movement
-- Items
-- Combat
-- Progression / Complexity
+- [ ] UI
+- [ ] Mapgeneration
+- [ ] Movement
+- [ ] Items
+- [ ] Combat
+- [ ] Progression / Complexity
