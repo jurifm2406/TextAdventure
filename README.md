@@ -16,8 +16,8 @@
 <img src="res/mvc.png" alt="model-view-controller concept" width="400">
 
 ## Development
-Development in spiral model
-implementing new features and testing them until they work and fit into game 
+- development in spiral model
+- implementing new features and testing them until they work and fit into game 
 
 ## Features
 - UI
@@ -33,16 +33,18 @@ implementing new features and testing them until they work and fit into game
       - bosses?
       - other heroes
     - chests
+    - minigames to unlock more rooms?
 - movement between rooms
 - items
   - weapons
   - armor/other (backpacks etc.)
-  - consumables
+  - consumables?
     - potions with effects
     - healing
 - combat
   - attacks
   - evasions/other options?
+    - having to provide an input in a specific time
   - rewards after defeating enemies
 - progression?
   - locked doors
@@ -53,9 +55,9 @@ point marked with ? considered nice to have but optional
 
 
 ## Roadmap
-- [ ] UI
-- [ ] Mapgeneration
-- [ ] Movement
-- [ ] Items
-- [ ] Combat
-- [ ] Progression / Complexity
+- [ ] UI 15.1.
+- [ ] map generation 22.1
+- [ ] movement 29.2.
+- [ ] items 10.2.
+- [ ] combat 24.2.
+- [ ] nice to have 10.3.
