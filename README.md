@@ -16,45 +16,49 @@
 <img src="res/mvc.png" alt="model-view-controller concept" width="400">
 
 ## Development
+
 - development in spiral model
-- implementing new features and testing them until they work and fit into game 
+- implementing new features and testing them until they work and fit into game
 
 ## Features
+
 - UI
-  - menu bar (top)
-  - text input (bottom)
-  - text output/history (center)
-  - map (top right)
-  - inventory/status (bottom right)
+    - menu bar (top)
+    - text input (bottom)
+    - text output/history (center)
+    - map (top right)
+    - inventory/status (bottom right)
+    - <img src="res/UI.png" alt="ui-sketch" width="500">
 - random map generation
-  - rooms
-    - NPCs (non-playable character)
-      - monsters
-      - bosses?
-      - other heroes
-    - chests
-    - minigames to unlock more rooms?
+    - rooms
+        - NPCs (non-playable character)
+            - monsters
+            - bosses?
+            - other heroes
+        - chests
+        - minigames to unlock more rooms?
 - movement between rooms
 - items
-  - weapons
-  - armor/other (backpacks etc.)
-  - consumables?
-    - potions with effects
-    - healing
+    - keys
+    - weapons
+    - armor/other (backpacks etc.)
+    - consumables?
+        - potions with effects
+        - healing
 - combat
-  - attacks
-  - evasions/other options?
-    - having to provide an input in a specific time
-  - rewards after defeating enemies
+    - attacks
+    - evasions/other options?
+        - having to provide an input in a specific time
+    - rewards after defeating enemies
 - progression?
-  - locked doors
-  - reaching of new floors with harder enemies
-  - story/at least context
+    - locked doors
+    - reaching of new floors with harder enemies
+    - story/at least context
 
 point marked with ? considered nice to have but optional
 
-
 ## Roadmap
+
 - [ ] UI 15.1.
 - [ ] map generation 22.1
 - [ ] movement 29.2.
