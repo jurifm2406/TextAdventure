@@ -13,9 +13,8 @@ class MainFrame(model: Model) : JFrame() {
     init {
         size = Dimension(1600, 900)
         jMenuBar = menuBar
-        add(content)
-        extendedState = MAXIMIZED_BOTH
 
+        content = Content(model.outputModel, model.mapModel)
         add(content, BorderLayout.CENTER)
 
         defaultCloseOperation = EXIT_ON_CLOSE
