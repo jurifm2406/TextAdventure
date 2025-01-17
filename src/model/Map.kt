@@ -13,7 +13,7 @@ class Map(size: Int) {
         val midY = (map[0].size - 1) / 2
         val midX = (map.size - 1) / 2
 
-        var roomQueue = mutableListOf<Room>()
+        val roomQueue = mutableListOf<Room>()
         var currentRoom = Room(Point(midX, midY))
         map[midX][midY] = currentRoom
         roomQueue.add(currentRoom)
@@ -21,13 +21,20 @@ class Map(size: Int) {
         var nextRoomQueue = mutableListOf<Room>()
 
         var roomCount = 1
-        val maxRooms = 10
+        val maxRooms = 15
 
         // generates map
         while (roomCount < maxRooms) {
-            for (room in roomQueue) {
+            for (i in 0..<roomQueue.size) {
+                val room = roomQueue[i]
                 val neighbourCoords = neighbourCoords(room.coords)
+                neighbourCoords.shuffle()
+                var skipNeighbours = false
                 for (neighbourCoord in neighbourCoords) {
+                    // skip if max neighbours already reached
+                    if (skipNeighbours) {
+                        continue
+                    }
                     // give up if maxRooms reached
                     if (roomCount == maxRooms) {
                         break
@@ -55,9 +62,15 @@ class Map(size: Int) {
                     map[neighbourCoord.x][neighbourCoord.y] = newRoom
                     nextRoomQueue.add(newRoom)
                     roomCount += 1
+
+                    // skip rest of neighbours if already 3 rooms placed
+                    if (neighbours(room.coords).size > 2) {
+                        skipNeighbours = true
+                    }
                 }
             }
-            roomQueue = nextRoomQueue
+
+            roomQueue += nextRoomQueue
             nextRoomQueue = mutableListOf()
         }
     }
@@ -119,7 +132,7 @@ class Map(size: Int) {
     fun export(): Array<Array<String>> {
         return map.map {
             it.map { item ->
-                if (item is Room) "x" else ""
+                if (item is Room) "x " else "  "
             }.toTypedArray()
         }.toTypedArray()
     }
