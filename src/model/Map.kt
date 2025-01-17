@@ -57,7 +57,8 @@ class Map(size: Int) {
                     roomCount += 1
                 }
             }
-            roomQueue = nextRoomQueue
+            roomQueue += nextRoomQueue
+
             nextRoomQueue = mutableListOf()
         }
     }

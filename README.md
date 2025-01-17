@@ -60,8 +60,9 @@ point marked with ? considered nice to have but optional
 ## Roadmap
 
 - [ ] UI 15.1.
-- [ ] map generation 22.1
-- [ ] movement 29.2.
-- [ ] items and entities in rooms 10.2.
-- [ ] combat 24.2.
-- [ ] nice to have 10.3.
+- [ ] map generation 27.1
+- [ ] movement 22.2.
+- [ ] items and entities in rooms 31.2.
+- [ ] simple combat 10.2.
+- [ ] advanced combat 24.2.
+- [ ] progression 10.3.
