@@ -19,6 +19,7 @@ class Controller {
             )
             view.content.input.text = ""
         }
+        model.mapModel.setDataVector(model.map.export(), arrayOf("0", "1", "2", "3", "4", "5", "6", "7", "8"))
     }
 }
 
