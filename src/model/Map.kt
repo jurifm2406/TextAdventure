@@ -1,7 +1,9 @@
 package model
 
+import model.objects.base.entities.Entity
 import model.objects.world.Directions
 import model.objects.world.Room
+import model.objects.world.RoomNotThereException
 import java.awt.Point
 import kotlin.random.Random
 
@@ -75,11 +77,28 @@ class Map(size: Int) {
         }
     }
 
-    fun move(direction: Int) {
+    fun move(direction: Int, entity: Entity) {
+        val neighbours = neighbours(entity.room.coords)
+        entity.room.entities.remove(entity)
 
+        if (direction == Directions.NORTH && neighbours[Directions.NORTH] != null) {
+            neighbours[Directions.NORTH]!!.entities.add(entity)
+            entity.room = neighbours[Directions.NORTH]!!
+        } else if (direction == Directions.EAST && neighbours[Directions.EAST] != null) {
+            neighbours[Directions.EAST]!!.entities.add(entity)
+            entity.room = neighbours[Directions.EAST]!!
+        } else if (direction == Directions.SOUTH && neighbours[Directions.SOUTH] != null) {
+            neighbours[Directions.SOUTH]!!.entities.add(entity)
+            entity.room = neighbours[Directions.SOUTH]!!
+        } else if (direction == Directions.WEST && neighbours[Directions.WEST] != null) {
+            neighbours[Directions.WEST]!!.entities.add(entity)
+            entity.room = neighbours[Directions.WEST]!!
+        } else {
+            throw RoomNotThereException()
+        }
     }
 
-    fun neighbours(roomCoords: Point): Array<Room?> {
+    private fun neighbours(roomCoords: Point): Array<Room?> {
         val neighbors = arrayOfNulls<Room?>(4)
 
         val x = roomCoords.x
@@ -104,7 +123,7 @@ class Map(size: Int) {
         return neighbors
     }
 
-    fun neighbourCoords(roomCoords: Point): Array<Point?> {
+    private fun neighbourCoords(roomCoords: Point): Array<Point?> {
         val neighbourCoord = arrayOfNulls<Point?>(4)
 
         val x = roomCoords.x
