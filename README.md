@@ -17,7 +17,7 @@
 
 ## Development
 - development in spiral model
-- implementing new features and testing them until they work and fit into game 
+- implementing new features and testing them until they work and fit into game
 
 ## Features
 - UI
@@ -33,7 +33,7 @@
       - bosses?
       - other heroes
     - chests
-    - minigames to unlock more rooms?
+    - minigames to unlock next rooms?
 - movement between rooms
 - items
   - weapons
@@ -58,6 +58,6 @@ point marked with ? considered nice to have but optional
 - [ ] UI 15.1.
 - [ ] map generation 22.1
 - [ ] movement 29.2.
-- [ ] items 10.2.
+- [ ] items and entities in rooms 10.2.
 - [ ] combat 24.2.
 - [ ] nice to have 10.3.
