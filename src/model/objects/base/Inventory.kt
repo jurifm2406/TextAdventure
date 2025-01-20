@@ -3,13 +3,14 @@ package model.objects.base
 import model.objects.base.item.Item
 
 class Inventory(val size: Int) {
-    private val content: MutableList<Item> = mutableListOf()
+    private val _content: MutableList<Item> = mutableListOf()
+    val content: List<Item> get() = _content
 
     fun addItem(item: Item) {
-        if (content.size >= size) {
+        if (_content.size >= size) {
             throw InventoryFullException()
         }
 
-        content.add(item)
+        _content.add(item)
     }
 }

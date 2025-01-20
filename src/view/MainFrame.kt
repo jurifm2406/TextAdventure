@@ -8,13 +8,12 @@ import javax.swing.JFrame
 
 class MainFrame(model: Model) : JFrame() {
     val menuBar = MenuBar()
-    val content: Content
+    val content = Content(model.mapModel, model.infoModel)
 
     init {
         size = Dimension(1600, 900)
         jMenuBar = menuBar
 
-        content = Content(model.outputModel, model.mapModel)
         add(content, BorderLayout.CENTER)
 
         defaultCloseOperation = EXIT_ON_CLOSE
