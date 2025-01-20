@@ -9,6 +9,7 @@ import kotlin.random.Random
 
 class Map(size: Int) {
     val map: Array<Array<Room?>> = Array(size) { arrayOfNulls(size) }
+    val startRoom: Room
 
     init {
         // variables for map generation
@@ -75,6 +76,7 @@ class Map(size: Int) {
             roomQueue += nextRoomQueue
             nextRoomQueue = mutableListOf()
         }
+        startRoom = map[map.size / 2][map.size / 2]!!
     }
 
     fun move(direction: Int, entity: Entity) {

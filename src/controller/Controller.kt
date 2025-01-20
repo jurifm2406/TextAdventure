@@ -5,7 +5,7 @@ import view.MainFrame
 import kotlin.system.exitProcess
 
 class Controller {
-    private val model = Model()
+    private val model = Model("test")
     private val view = MainFrame(model)
 
     init {

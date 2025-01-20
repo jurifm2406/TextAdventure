@@ -1,9 +1,7 @@
 package model.objects.base.entities
 
-import model.objects.base.Inventory
-import model.objects.base.item.Armor
-import model.objects.base.item.Weapon
+import model.objects.world.Room
 
-class Hero(name: String, health: Int, inventory: Inventory, weapon: Weapon, armor: Armor) :
-    Entity(name, health, inventory, weapon, armor) {
+class Hero(name: String, startRoom: Room) :
+    Entity(name, 100, room = startRoom) {
 }
