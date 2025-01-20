@@ -3,7 +3,7 @@ package model
 import model.objects.base.entities.Hero
 import javax.swing.text.PlainDocument
 
-fun PlainDocument.addText(text: String) {
+fun PlainDocument.print(text: String) {
     this.insertString(
         this.length,
         text + "\n",

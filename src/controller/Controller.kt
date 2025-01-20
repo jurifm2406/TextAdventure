@@ -1,6 +1,8 @@
 package controller
 
 import model.Model
+import model.objects.world.RoomNotThereException
+import model.print
 import view.MainFrame
 import kotlin.system.exitProcess
 
@@ -11,8 +13,8 @@ class Controller {
     init {
         view.menuBar.exit.addActionListener { exitProcess(0) }
         view.content.input.addActionListener {
-            parseInput(view.content.input.text)
-            model.outputModel.addText(view.content.input.text)
+            model.outputModel.print(view.content.input.text)
+            parseInput(view.content.input.text.lowercase())
             view.content.input.text = ""
         }
         updateMap()
@@ -25,7 +27,25 @@ class Controller {
     }
 
     fun parseInput(input: String) {
-        println(input)
+        val splitInput = input.split(" ")
+
+        if (splitInput[0] in Commands.root) {
+            if (splitInput[0] == "move") {
+                if (splitInput[1] in Commands.movement) {
+                    try {
+                        model.map.move(Commands.movement.indexOf(splitInput[1]), model.hero)
+                        updateMap()
+                        model.outputModel.print("Moved to the ${splitInput[1]}")
+                    } catch (e: RoomNotThereException) {
+                        model.outputModel.print("There's no room in that direction!")
+                    }
+                } else {
+                    model.outputModel.print("This direction doesn't exist!")
+                }
+            }
+        } else {
+            model.outputModel.print("This command doesn't exist!")
+        }
     }
 }
 
