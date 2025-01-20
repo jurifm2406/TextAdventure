@@ -6,5 +6,4 @@ import model.objects.base.item.Weapon
 import model.objects.world.Room
 
 class NPC(name: String, health: Int, inventory: Inventory, weapon: Weapon, armor: Armor, room: Room) :
-    Entity(name, health, inventory, weapon, armor, room) {
-}
+    Entity(name, health, inventory, weapon, armor, room)
