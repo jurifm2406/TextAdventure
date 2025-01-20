@@ -12,11 +12,7 @@ class Controller {
         view.menuBar.exit.addActionListener { exitProcess(0) }
         view.content.input.addActionListener {
             parseInput(view.content.input.text)
-            model.outputModel.insertString(
-                model.outputModel.length,
-                view.content.input.text + "\n",
-                null
-            )
+            model.outputModel.addText(view.content.input.text)
             view.content.input.text = ""
         }
         updateMap()
