@@ -1,22 +1,23 @@
 package view.content
 
-import model.MapModel
 import java.awt.BorderLayout
 import java.awt.Dimension
 import javax.swing.BorderFactory
 import javax.swing.JPanel
 import javax.swing.JTable
 import javax.swing.table.DefaultTableCellRenderer
+import javax.swing.table.DefaultTableModel
 
-class Sidebar(mapModel: MapModel) : JPanel() {
-    val map: JTable = JTable(mapModel)
+class Sidebar(mapModel: DefaultTableModel, infoModel: DefaultTableModel) : JPanel() {
+    val map = JTable(mapModel)
+    val information = JTable(infoModel)
+    val informationColumnWidths = arrayOf(0.5, 0.25, 0.25)
 
     init {
-
         layout = BorderLayout(0, 10)
         border = BorderFactory.createEmptyBorder()
 
-        val cellSize = 20
+        val cellSize = 30
         for (i in 0..<map.columnCount) {
             map.columnModel.getColumn(i).preferredWidth = cellSize
             map.columnModel.getColumn(i).cellRenderer = CenteredTableRenderer()
@@ -29,8 +30,13 @@ class Sidebar(mapModel: MapModel) : JPanel() {
 
         preferredSize = Dimension(cellSize * map.columnCount, map.preferredSize.height)
 
-
         add(map, BorderLayout.NORTH)
+
+        information.autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS
+        information.isEnabled = false
+        information.setShowGrid(false)
+
+        add(information, BorderLayout.SOUTH)
     }
 
     class CenteredTableRenderer : DefaultTableCellRenderer() {

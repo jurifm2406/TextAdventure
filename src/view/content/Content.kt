@@ -1,15 +1,15 @@
 package view.content
 
-import model.MapModel
 import java.awt.BorderLayout
 import javax.swing.*
 import javax.swing.border.EmptyBorder
-import javax.swing.text.Document
+import javax.swing.table.DefaultTableModel
 
-class Content(outputModel: Document, mapModel: MapModel) : JPanel() {
-    val sidebar = Sidebar(mapModel)
-    val output: JScrollPane
-    val input: JTextField
+class Content(mapModel: DefaultTableModel, infoModel: DefaultTableModel) : JPanel() {
+    val sidebar = Sidebar(mapModel, infoModel)
+    val output = JTextArea()
+    val input = JTextField()
+    val scroll = JScrollPane(output)
 
     init {
         border = EmptyBorder(10, 10, 10, 10)
@@ -17,14 +17,11 @@ class Content(outputModel: Document, mapModel: MapModel) : JPanel() {
 
         add(sidebar, BorderLayout.EAST)
 
-        val textArea = JTextArea(outputModel)
-        textArea.isEditable = false
-        val scroll = JScrollPane(textArea)
+        output.isEditable = false
         scroll.verticalScrollBarPolicy = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED
-        output = scroll
-        add(output, BorderLayout.CENTER)
 
-        input = JTextField()
+        add(scroll, BorderLayout.CENTER)
+
         add(input, BorderLayout.SOUTH)
     }
 }
