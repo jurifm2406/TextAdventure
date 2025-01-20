@@ -81,7 +81,6 @@ class Map(size: Int) {
 
     fun move(direction: Int, entity: Entity) {
         val neighbours = neighbours(entity.room.coords)
-        entity.room.entities.remove(entity)
 
         if (direction == Directions.NORTH && neighbours[Directions.NORTH] != null) {
             neighbours[Directions.NORTH]!!.entities.add(entity)
@@ -98,6 +97,8 @@ class Map(size: Int) {
         } else {
             throw RoomNotThereException()
         }
+
+        entity.room.entities.remove(entity)
     }
 
     private fun neighbours(roomCoords: Point): Array<Room?> {
