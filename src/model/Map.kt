@@ -77,6 +77,17 @@ class Map(size: Int) {
             nextRoomQueue = mutableListOf()
         }
         startRoom = map[map.size / 2][map.size / 2]!!
+
+        // create room list to place items and entities in
+        val room_list = map.flatten().shuffled().toMutableList()
+        room_list.remove(currentRoom)
+
+
+        // add enemies to certain number of rooms
+        for (i in 0.. Random.nextInt(4, 6)){
+
+        }
+
     }
 
     fun move(direction: Int, entity: Entity) {
