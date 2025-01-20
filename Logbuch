@@ -1,4 +1,5 @@
 7.1 Anfang UI
 10.1 Grund  UI mit Texteingabe leerem map feld top bar und Testausgabe erstellung Anforderungsspezifikationen anfang map generation + helper functions
 15.1 Überarbeitung Anforderungsspezifikationen map generation debuggen
-17.1 Map generation debuggen und Anfang movement 
+17.1 Map generation debuggen und Anfang movement
+20.1 Directions überarbeitet und movement parseinput implementiert und map zeigt Hero Raum
