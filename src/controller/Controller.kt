@@ -19,10 +19,17 @@ class Controller {
             )
             view.content.input.text = ""
         }
-        model.mapModel.setDataVector(model.map.export(), arrayOf("0", "1", "2", "3", "4", "5", "6", "7", "8"))
+        updateMap()
+    }
+
+    fun updateMap() {
+        val displayMap = model.map.export()
+        displayMap[model.hero.room.coords.x][model.hero.room.coords.y] = "o"
+        model.mapModel.setDataVector(displayMap, arrayOf("0", "1", "2", "3", "4", "5", "6", "7", "8"))
+    }
+
+    fun parseInput(input: String) {
+        println(input)
     }
 }
 
-fun parseInput(input: String) {
-    println(input)
-}
