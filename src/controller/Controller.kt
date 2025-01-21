@@ -33,34 +33,56 @@ class Controller {
     fun updateInfo() {
         val infoData: MutableList<Array<String>> = mutableListOf()
 
-        infoData.add(arrayOf("floor", "", model.floor.toString()))
-        infoData.add(arrayOf("health", "", model.hero.health.toString()))
-        infoData.add(Array(3) { "" })
-        infoData.add(arrayOf("WEAPONS", "", ""))
-        infoData.add(arrayOf("name", "", "dmg"))
-        infoData.add(Array(3) { "" })
+        infoData.add(arrayOf("floor", "", "", model.floor.toString()))
+        infoData.add(arrayOf("health", "", "", model.hero.health.toString()))
+        infoData.add(Array(4) { "" })
 
-        for (weapon in model.hero.inventory.content.filterIsInstance<Weapon>()) {
-            infoData.add(arrayOf(weapon.name, "", weapon.damage.toString()))
+        infoData.add(arrayOf("WEAPONS", "", "", ""))
+        infoData.add(arrayOf("id", "name", "", "dmg"))
+
+        infoData.add(arrayOf("x", model.hero.weapon.name, "", model.hero.weapon.damage.toString()))
+
+        model.hero.inventory.content.filterIsInstance<Weapon>().forEachIndexed { id, weapon ->
+            infoData.add(arrayOf(id.toString(), weapon.name, "", weapon.damage.toString()))
         }
 
-        infoData.add(arrayOf("ARMOR", "", ""))
-        infoData.add(arrayOf("name", "abs", "neg"))
-        infoData.add(Array(3) { "" })
+        infoData.add(Array(4) { "" })
 
-        for (armor in model.hero.inventory.content.filterIsInstance<Armor>()) {
-            infoData.add(arrayOf(armor.name, armor.absorbtion.toString(), round(armor.negation).toString()))
+        infoData.add(arrayOf("ARMOR", "", "", ""))
+        infoData.add(arrayOf("id", "name", "abs", "neg"))
+
+        infoData.add(
+            arrayOf(
+                "x",
+                model.hero.armor.name,
+                model.hero.armor.absorbtion.toString(),
+                model.hero.armor.negation.toString()
+            )
+        )
+
+        model.hero.inventory.content.filterIsInstance<Armor>().forEachIndexed { id, armor ->
+            infoData.add(
+                arrayOf(
+                    id.toString(),
+                    armor.name,
+                    armor.absorbtion.toString(),
+                    round(armor.negation).toString()
+                )
+            )
         }
 
-        infoData.add(arrayOf("CONSUMABLE", "", ""))
-        infoData.add(arrayOf("name", "", "effect"))
-        infoData.add(Array(3) { "" })
+        infoData.add(Array(4) { "" })
 
-        for (consumable in model.hero.inventory.content.filterIsInstance<Consumable>()) {
-            infoData.add(arrayOf(consumable.name, "", consumable.description))
+        infoData.add(arrayOf("ITEMS", "", "", ""))
+        infoData.add(arrayOf("id", "name", "", "effect"))
+
+        model.hero.inventory.content.filterIsInstance<Consumable>().forEachIndexed { id, consumable ->
+            infoData.add(arrayOf(id.toString(), consumable.name, "", consumable.description))
         }
 
-        model.infoModel.setDataVector(infoData.toTypedArray(), arrayOf("0", "1", "2"))
+        infoData.add(Array(4) { "" })
+
+        model.infoModel.setDataVector(infoData.toTypedArray(), arrayOf("0", "1", "2", "3"))
 
         view.content.sidebar.informationColumnWidths.forEachIndexed { column, widthPercentage ->
             view.content.sidebar.information.columnModel.getColumn(column).preferredWidth =
