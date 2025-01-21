@@ -1,9 +1,9 @@
 package model
 
-import model.objects.base.entities.Enemy
 import model.objects.base.Inventory
+import model.objects.base.entities.Enemy
 
 object Data {
 
-    val enemies: Array<Enemy> = (Enemy("Orc",150, Inventory(10), ))
+    val enemies: Array<Enemy> = arrayOf(Enemy("Orc", 150, Inventory(10)))
 }
