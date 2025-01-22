@@ -114,7 +114,16 @@ class Map(size: Int) {
             neighbours[Directions.WEST]!!.entities.add(entity)
             entity.room = neighbours[Directions.WEST]!!
         } else {
-            throw RoomNotThereException()
+            var dir = ""
+
+            when (direction) {
+                Directions.NORTH -> dir = "west"
+                Directions.EAST -> dir = "south"
+                Directions.SOUTH -> dir = "east"
+                Directions.WEST -> dir = "north"
+            }
+
+            throw RoomNotThereException("There's no room to the $dir!")
         }
 
         entity.room.entities.remove(entity)
