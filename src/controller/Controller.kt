@@ -4,6 +4,9 @@ import model.Model
 import model.objects.base.item.Armor
 import model.objects.base.item.Consumable
 import model.objects.base.item.Weapon
+import model.objects.base.entities.Enemy
+import model.objects.base.entities.Entity
+import model.objects.base.entities.Hero
 import model.objects.world.RoomNotThereException
 import view.MainFrame
 import javax.swing.JTextPane
