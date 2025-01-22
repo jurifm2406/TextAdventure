@@ -1,13 +1,14 @@
 package view.content
 
 import java.awt.BorderLayout
+import java.awt.Point
 import javax.swing.*
 import javax.swing.border.EmptyBorder
 import javax.swing.table.DefaultTableModel
 
-class Content(mapModel: DefaultTableModel, infoModel: DefaultTableModel) : JPanel() {
-    val sidebar = Sidebar(mapModel, infoModel)
-    val output = JTextArea()
+class Content(infoModel: DefaultTableModel, mapSize: Point) : JPanel() {
+    val sidebar = Sidebar(infoModel, mapSize)
+    val output = JTextPane()
     val input = JTextField()
     val scroll = JScrollPane(output)
 

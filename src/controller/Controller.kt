@@ -1,20 +1,25 @@
 package controller
 
 import model.Model
-import model.objects.base.entities.Enemy
-import model.objects.base.entities.Entity
-import model.objects.base.entities.Hero
 import model.objects.base.item.Armor
 import model.objects.base.item.Consumable
 import model.objects.base.item.Weapon
 import model.objects.world.RoomNotThereException
 import view.MainFrame
-import javax.swing.JTextArea
+import javax.swing.JTextPane
+import javax.swing.text.SimpleAttributeSet
+import javax.swing.text.StyleConstants
 import kotlin.math.round
 import kotlin.system.exitProcess
 
-fun JTextArea.appendln(text: String?) {
-    append("$text\n")
+fun JTextPane.respond(message: String?, bold: Boolean = true) {
+    if (bold) {
+        val attributes = SimpleAttributeSet()
+        StyleConstants.setBold(attributes, true)
+        styledDocument.insertString(document.length, "$message\n", attributes)
+    } else {
+        styledDocument.insertString(document.length, "$message\n", null)
+    }
 }
 
 class Controller {
@@ -24,7 +29,7 @@ class Controller {
     init {
         view.menuBar.exit.addActionListener { exitProcess(0) }
         view.content.input.addActionListener {
-            view.content.output.append("${view.content.input.text}\n")
+            view.content.output.respond(view.content.input.text, false)
             parseInput(view.content.input.text.lowercase())
             view.content.input.text = ""
         }
@@ -33,9 +38,14 @@ class Controller {
     }
 
     fun updateMap() {
-        val displayMap = model.map.export()
-        displayMap[model.hero.room.coords.x][model.hero.room.coords.y] = "o"
-        model.mapModel.setDataVector(displayMap, arrayOf("0", "1", "2", "3", "4", "5", "6", "7", "8"))
+        view.content.sidebar.map.setValueAt("o", model.hero.room.coords.x, model.hero.room.coords.y)
+
+        for (room in model.map.neighbours(model.hero.room.coords)) {
+            if (room == null) {
+                continue
+            }
+            view.content.sidebar.map.setValueAt("x", room.coords.x, room.coords.y)
+        }
     }
 
     fun updateInfo() {
@@ -107,26 +117,26 @@ class Controller {
                     try {
                         model.map.move(Commands.movement.indexOf(splitInput[1]), model.hero)
                         updateMap()
-                        view.content.output.appendln("moved to the ${splitInput[1]}.")
+                        view.content.output.respond("moved to the ${splitInput[1]}.")
 
                         if(model.map.map[model.hero.room.coords.x][model.hero.room.coords.y]!!.entities.filterIsInstance<Enemy>().isNotEmpty()){
                             for (i in 0 ..< model.map.map[model.hero.room.coords.x][model.hero.room.coords.y]!!.entities.size){
-                                view.content.output.appendln(model.map.map[model.hero.room.coords.x][model.hero.room.coords.y]!!.entities[i].name)
+                                view.content.output.respond(model.map.map[model.hero.room.coords.x][model.hero.room.coords.y]!!.entities[i].name)
                             }
                             combat(model.hero, model.map.map[model.hero.room.coords.x][model.hero.room.coords.y]!!.entities.filterIsInstance<Enemy>()[0])
                         }
                         for (i in 0 ..< model.map.map[model.hero.room.coords.x][model.hero.room.coords.y]!!.inventory.content.size){
-                            view.content.output.appendln(model.map.map[model.hero.room.coords.x][model.hero.room.coords.y]!!.inventory.content[i].name)
+                            view.content.output.respond(model.map.map[model.hero.room.coords.x][model.hero.room.coords.y]!!.inventory.content[i].name)
                         }
                     } catch (e: RoomNotThereException) {
-                        view.content.output.appendln(e.message)
+                        view.content.output.respond(e.message)
                     }
                 } else {
-                    view.content.output.appendln("this direction doesn't exist!")
+                    view.content.output.respond("this direction doesn't exist")
                 }
             }
         } else {
-            view.content.output.appendln("this command doesn't exist!")
+            view.content.output.respond("this command doesn't exist")
         }
 
 

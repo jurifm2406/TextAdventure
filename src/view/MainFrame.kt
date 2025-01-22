@@ -8,7 +8,7 @@ import javax.swing.JFrame
 
 class MainFrame(model: Model) : JFrame() {
     val menuBar = MenuBar()
-    val content = Content(model.mapModel, model.infoModel)
+    val content = Content(model.infoModel, model.mapSize)
 
     init {
         size = Dimension(1600, 900)
