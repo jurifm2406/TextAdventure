@@ -39,7 +39,7 @@
         - minigames to unlock next rooms?
 - movement between rooms
 - items
-    - keys
+    - keys?
     - weapons
     - armor/other (backpacks etc.)
     - consumables?
