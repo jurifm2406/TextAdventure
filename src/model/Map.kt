@@ -7,14 +7,14 @@ import model.objects.world.RoomNotThereException
 import java.awt.Point
 import kotlin.random.Random
 
-class Map(size: Int) {
-    val map: Array<Array<Room?>> = Array(size) { arrayOfNulls(size) }
+class Map(size: Point) {
+    val map: Array<Array<Room?>> = Array(size.x) { arrayOfNulls(size.y) }
     val startRoom: Room
 
     init {
         // variables for map generation
-        val midY = (map[0].size - 1) / 2
         val midX = (map.size - 1) / 2
+        val midY = (map[0].size - 1) / 2
 
         val roomQueue = mutableListOf<Room>()
         var currentRoom = Room(Point(midX, midY))
@@ -177,13 +177,5 @@ class Map(size: Int) {
         }
 
         return neighbourCoord
-    }
-
-    fun export(): Array<Array<String>> {
-        return map.map {
-            it.map { item ->
-                if (item is Room) "x " else "  "
-            }.toTypedArray()
-        }.toTypedArray()
     }
 }

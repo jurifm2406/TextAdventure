@@ -38,9 +38,14 @@ class Controller {
     }
 
     fun updateMap() {
-        val displayMap = model.map.export()
-        displayMap[model.hero.room.coords.x][model.hero.room.coords.y] = "o"
-        model.mapModel.setDataVector(displayMap, arrayOf("0", "1", "2", "3", "4", "5", "6", "7", "8"))
+        view.content.sidebar.map.setValueAt("o", model.hero.room.coords.x, model.hero.room.coords.y)
+
+        for (room in model.map.neighbours(model.hero.room.coords)) {
+            if (room == null) {
+                continue
+            }
+            view.content.sidebar.map.setValueAt("x", room.coords.x, room.coords.y)
+        }
     }
 
     fun updateInfo() {

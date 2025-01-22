@@ -2,14 +2,15 @@ package view.content
 
 import java.awt.BorderLayout
 import java.awt.Dimension
+import java.awt.Point
 import javax.swing.BorderFactory
 import javax.swing.JPanel
 import javax.swing.JTable
 import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.table.DefaultTableModel
 
-class Sidebar(mapModel: DefaultTableModel, infoModel: DefaultTableModel) : JPanel() {
-    val map = JTable(mapModel)
+class Sidebar(infoModel: DefaultTableModel, mapSize: Point) : JPanel() {
+    val map = JTable(mapSize.x, mapSize.y)
     val information = JTable(infoModel)
     val informationColumnWidths = arrayOf(0.25, 0.45, 0.15, 0.15)
 
