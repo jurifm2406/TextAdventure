@@ -10,8 +10,8 @@ abstract class Entity(
     val name: String,
     var health: Int = 20,
     val inventory: Inventory = Inventory(8),
-    val weapon: Weapon = Weapon("fists", "mighty fists", 2),
-    val armor: Armor = Armor("nothing", "bare skin", 0, 1.0),
+    var weapon: Weapon = Weapon("fists", "mighty fists", 2),
+    var armor: Armor = Armor("nothing", "bare skin", 0, 1.0),
     var room: Room
 ) {
     fun attack(target: Entity) {

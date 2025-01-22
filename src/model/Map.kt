@@ -8,7 +8,7 @@ import java.awt.Point
 import kotlin.random.Random
 
 class Map(size: Int) {
-    val map: Array<Array<Room?>> = Array(size) { arrayOfNulls(size) }
+    var map: Array<Array<Room?>> = Array(size) { arrayOfNulls(size) }
     val startRoom: Room
 
     init {
@@ -79,7 +79,7 @@ class Map(size: Int) {
         startRoom = map[map.size / 2][map.size / 2]!!
 
         // create room list to place items and entities in
-        val roomList = map.flatten().shuffled().toMutableList().filterNotNull().toMutableList()
+        val roomList = map.flatten().shuffled().filterNotNull().toMutableList()
         roomList.remove(startRoom)
 
         val endRooms = mutableListOf<Room>()
@@ -91,11 +91,37 @@ class Map(size: Int) {
             }
         }
 
-        // add enemies to certain number of rooms
-        for (i in 0..Random.nextInt(4, 6)) {
-
+        // add weapons to random number of rooms
+        for (i in 0..<Random.nextInt(4, 6)) {
+            map[roomList[i].coords.x][roomList[i].coords.y]!!.inventory.addItem(Data.weapons[Random.nextInt(0, Data.weapons.size)])
         }
+        roomList.shuffle()
+        // add armour to random number of rooms
+        for (i in 0..<Random.nextInt(4, 6)){
+            map[roomList[i].coords.x][roomList[i].coords.y]!!.inventory.addItem(Data.armors[Random.nextInt(0, Data.armors.size)])
+        }
+        roomList.shuffle()
+        // add enemies to random number of rooms
+        for (i in 0..<Random.nextInt(4, 6)){
+            map[roomList[i].coords.x][roomList[i].coords.y]!!.entities.add(Data.enemies[Random.nextInt(0, Data.enemies.size)])
+            map[roomList[i].coords.x][roomList[i].coords.y]!!.entities[0].armor = Data.armors[Random.nextInt(0, Data.armors.size)]
+            map[roomList[i].coords.x][roomList[i].coords.y]!!.entities[0].weapon = Data.weapons[Random.nextInt(0, Data.weapons.size)]
+            map[roomList[i].coords.x][roomList[i].coords.y]!!.entities[0].room = roomList[i]
+        }
+        for(i in 0 ..< map.size) {
+            for(j in 0 ..< map[0].size) {
+                if (map[i][j] != null) {
+                    for (k in 0 ..< map[i][j]!!.inventory.content.size){
+                        print(map[i][j]!!.inventory.content[k].name)
+                    }
+                    for(l in 0..< map[i][j]!!.entities.size){
+                        print(map[i][j]!!.entities[l].name)
+                    }
 
+                }
+
+            }
+        }
     }
 
     fun move(direction: Int, entity: Entity) {

@@ -1,6 +1,9 @@
 package controller
 
 import model.Model
+import model.objects.base.entities.Enemy
+import model.objects.base.entities.Entity
+import model.objects.base.entities.Hero
 import model.objects.base.item.Armor
 import model.objects.base.item.Consumable
 import model.objects.base.item.Weapon
@@ -105,6 +108,16 @@ class Controller {
                         model.map.move(Commands.movement.indexOf(splitInput[1]), model.hero)
                         updateMap()
                         view.content.output.appendln("moved to the ${splitInput[1]}.")
+
+                        if(model.map.map[model.hero.room.coords.x][model.hero.room.coords.y]!!.entities.filterIsInstance<Enemy>().isNotEmpty()){
+                            for (i in 0 ..< model.map.map[model.hero.room.coords.x][model.hero.room.coords.y]!!.entities.size){
+                                view.content.output.appendln(model.map.map[model.hero.room.coords.x][model.hero.room.coords.y]!!.entities[i].name)
+                            }
+                            combat(model.hero, model.map.map[model.hero.room.coords.x][model.hero.room.coords.y]!!.entities.filterIsInstance<Enemy>()[0])
+                        }
+                        for (i in 0 ..< model.map.map[model.hero.room.coords.x][model.hero.room.coords.y]!!.inventory.content.size){
+                            view.content.output.appendln(model.map.map[model.hero.room.coords.x][model.hero.room.coords.y]!!.inventory.content[i].name)
+                        }
                     } catch (e: RoomNotThereException) {
                         view.content.output.appendln(e.message)
                     }
@@ -115,5 +128,11 @@ class Controller {
         } else {
             view.content.output.appendln("this command doesn't exist!")
         }
+
+
     }
+    fun combat(hero: Hero, defender: Entity){
+        return
+    }
+
 }
