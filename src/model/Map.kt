@@ -25,15 +25,21 @@ class Map(size: Point) {
 
         var roomCount = 1
         val maxRooms = 15
+        var queueStart = 0
 
         // generates map
         while (roomCount < maxRooms) {
-            for (i in 0..<roomQueue.size) {
+            for (i in queueStart..<roomQueue.size) {
                 val room = roomQueue[i]
+
+                if (neighbours(room.coords).filterNotNull().size > 2) {
+                    continue
+                }
+
                 val neighbourCoords = neighbourCoords(room.coords)
                 neighbourCoords.shuffle()
                 var skipNeighbours = false
-                for (neighbourCoord in neighbourCoords) {
+                for (neighbourCoord in neighbourCoords.filterNotNull()) {
                     // skip if max neighbours already reached
                     if (skipNeighbours) {
                         continue
@@ -42,17 +48,12 @@ class Map(size: Point) {
                     if (roomCount == maxRooms) {
                         break
                     }
-                    // check if there is neighbouring cell
-                    if (neighbourCoord == null) {
-                        continue
-                    }
                     // give up if cell is not empty
                     if (map[neighbourCoord.x][neighbourCoord.y] != null) {
                         continue
                     }
                     // give up if cell has more than one neighbour
-                    val subNeighbours = neighbours(neighbourCoord)
-                    if (subNeighbours.filterNotNull().size > 1) {
+                    if (neighbours(neighbourCoord).filterNotNull().size > 1) {
                         continue
                     }
                     // 50% chance to give up
@@ -67,10 +68,16 @@ class Map(size: Point) {
                     roomCount += 1
 
                     // skip rest of neighbours if already 3 rooms placed
-                    if (neighbours(room.coords).size > 2) {
+                    if (neighbours(room.coords).filterNotNull().size > 2) {
                         skipNeighbours = true
                     }
                 }
+            }
+
+            queueStart = if (nextRoomQueue.size > 0) {
+                roomQueue.size
+            } else {
+                0
             }
 
             roomQueue += nextRoomQueue
@@ -129,7 +136,7 @@ class Map(size: Point) {
         entity.room.entities.remove(entity)
     }
 
-    private fun neighbours(roomCoords: Point): Array<Room?> {
+    fun neighbours(roomCoords: Point): Array<Room?> {
         val neighbors = arrayOfNulls<Room?>(4)
 
         val x = roomCoords.x
