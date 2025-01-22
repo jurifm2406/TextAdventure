@@ -6,8 +6,13 @@ import model.objects.base.item.Consumable
 import model.objects.base.item.Weapon
 import model.objects.world.RoomNotThereException
 import view.MainFrame
+import javax.swing.JTextArea
 import kotlin.math.round
 import kotlin.system.exitProcess
+
+fun JTextArea.appendln(text: String?) {
+    append("$text\n")
+}
 
 class Controller {
     private val model = Model("test")
@@ -99,16 +104,16 @@ class Controller {
                     try {
                         model.map.move(Commands.movement.indexOf(splitInput[1]), model.hero)
                         updateMap()
-                        view.content.output.append("Moved to the ${splitInput[1]}")
+                        view.content.output.appendln("moved to the ${splitInput[1]}.")
                     } catch (e: RoomNotThereException) {
-                        view.content.output.append("There's no room in that direction!")
+                        view.content.output.appendln(e.message)
                     }
                 } else {
-                    view.content.output.append("This direction doesn't exist!")
+                    view.content.output.appendln("this direction doesn't exist!")
                 }
             }
         } else {
-            view.content.output.append("This command doesn't exist!")
+            view.content.output.appendln("this command doesn't exist!")
         }
     }
 }
