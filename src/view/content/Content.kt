@@ -7,7 +7,7 @@ import javax.swing.table.DefaultTableModel
 
 class Content(mapModel: DefaultTableModel, infoModel: DefaultTableModel) : JPanel() {
     val sidebar = Sidebar(mapModel, infoModel)
-    val output = JTextArea()
+    val output = JTextPane()
     val input = JTextField()
     val scroll = JScrollPane(output)
 

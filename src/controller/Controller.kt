@@ -6,12 +6,20 @@ import model.objects.base.item.Consumable
 import model.objects.base.item.Weapon
 import model.objects.world.RoomNotThereException
 import view.MainFrame
-import javax.swing.JTextArea
+import javax.swing.JTextPane
+import javax.swing.text.SimpleAttributeSet
+import javax.swing.text.StyleConstants
 import kotlin.math.round
 import kotlin.system.exitProcess
 
-fun JTextArea.appendln(text: String?) {
-    append("$text\n")
+fun JTextPane.respond(message: String?, bold: Boolean = true) {
+    if (bold) {
+        val attributes = SimpleAttributeSet()
+        StyleConstants.setBold(attributes, true)
+        styledDocument.insertString(document.length, "$message\n", attributes)
+    } else {
+        styledDocument.insertString(document.length, "$message\n", null)
+    }
 }
 
 class Controller {
@@ -21,7 +29,7 @@ class Controller {
     init {
         view.menuBar.exit.addActionListener { exitProcess(0) }
         view.content.input.addActionListener {
-            view.content.output.append("${view.content.input.text}\n")
+            view.content.output.respond(view.content.input.text, false)
             parseInput(view.content.input.text.lowercase())
             view.content.input.text = ""
         }
@@ -104,16 +112,16 @@ class Controller {
                     try {
                         model.map.move(Commands.movement.indexOf(splitInput[1]), model.hero)
                         updateMap()
-                        view.content.output.appendln("moved to the ${splitInput[1]}.")
+                        view.content.output.respond("moved to the ${splitInput[1]}")
                     } catch (e: RoomNotThereException) {
-                        view.content.output.appendln(e.message)
+                        view.content.output.respond(e.message)
                     }
                 } else {
-                    view.content.output.appendln("this direction doesn't exist!")
+                    view.content.output.respond("this direction doesn't exist")
                 }
             }
         } else {
-            view.content.output.appendln("this command doesn't exist!")
+            view.content.output.respond("this command doesn't exist")
         }
     }
 }
