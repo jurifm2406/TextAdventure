@@ -1,3 +1,3 @@
 package model.objects.base
 
-class InventoryFullException : Exception("Inventory is full!")
+class InventoryFullException : Exception("inventory is full")
