@@ -8,7 +8,7 @@ import model.objects.base.entities.Enemy
 import model.objects.base.entities.Entity
 import model.objects.base.entities.Hero
 import model.objects.world.RoomNotThereException
-import view.MainFrame
+import view.View
 import javax.swing.JTextPane
 import javax.swing.text.SimpleAttributeSet
 import javax.swing.text.StyleConstants
@@ -27,7 +27,31 @@ fun JTextPane.respond(message: String?, bold: Boolean = true) {
 
 class Controller {
     private val model = Model("test")
-    private val view = MainFrame(model)
+    private val view = View(model)
+
+    val commands = mapOf(
+        "move" to mapOf(
+            "north" to Directions.WEST,
+            "east" to Directions.SOUTH,
+            "south" to Directions.EAST,
+            "west" to Directions.NORTH
+        ),
+        "inventory" to mapOf(
+            "drop" to null,
+            "take" to null,
+            "info" to null
+        ),
+        "help" to mapOf(
+            null to "information about the available commands",
+            "move" to "movement between rooms, available options: north, east, south, west",
+            "inventory" to mapOf(
+                null to "used to interact with your inventory. usage: inventory [subcommand] [item id]",
+                "drop" to "drop an item from your inventory into the current room",
+                "take" to "take an inventory from the current room into your inventory",
+                "info" to "get long-form information about an item"
+            )
+        )
+    )
 
     init {
         view.menuBar.exit.addActionListener { exitProcess(0) }

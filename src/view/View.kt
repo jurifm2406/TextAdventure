@@ -6,7 +6,7 @@ import java.awt.BorderLayout
 import java.awt.Dimension
 import javax.swing.JFrame
 
-class MainFrame(model: Model) : JFrame() {
+class View(model: Model) : JFrame() {
     val menuBar = MenuBar()
     val content = Content(model.infoModel, model.mapSize)
 
