@@ -157,7 +157,7 @@ class Map(size: Point) {
                 Directions.WEST -> dir = "north"
             }
 
-            throw RoomNotThereException("There's no room to the $dir!")
+            throw RoomNotThereException(dir)
         }
 
         entity.room.entities.remove(entity)
