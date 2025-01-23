@@ -95,7 +95,6 @@ class Map(size: Point) {
         roomList.forEach { room ->
             if (neighbours(room.coords).filterNotNull().size == 1) {
                 endRooms.add(room)
-                println("${room.coords.x}, ${room.coords.y}")
             }
         }
 
@@ -166,23 +165,20 @@ class Map(size: Point) {
     fun neighbours(roomCoords: Point): Array<Room?> {
         val neighbors = arrayOfNulls<Room?>(4)
 
-        val x = roomCoords.x
-        val y = roomCoords.y
-
-        if (y > 0) {
-            neighbors[Directions.NORTH] = map[x][y - 1]
+        if (roomCoords.y > 0) {
+            neighbors[Directions.NORTH] = map[roomCoords.x][roomCoords.y - 1]
         }
 
-        if (x < map.size - 1) {
-            neighbors[Directions.EAST] = map[x + 1][y]
+        if (roomCoords.x < map.size - 1) {
+            neighbors[Directions.EAST] = map[roomCoords.x + 1][roomCoords.y]
         }
 
-        if (y < map[0].size - 1) {
-            neighbors[Directions.SOUTH] = map[x][y + 1]
+        if (roomCoords.y < map[0].size - 1) {
+            neighbors[Directions.SOUTH] = map[roomCoords.x][roomCoords.y + 1]
         }
 
-        if (x > 0) {
-            neighbors[Directions.WEST] = map[x - 1][y]
+        if (roomCoords.x > 0) {
+            neighbors[Directions.WEST] = map[roomCoords.x - 1][roomCoords.y]
         }
 
         return neighbors
@@ -191,23 +187,20 @@ class Map(size: Point) {
     private fun neighbourCoords(roomCoords: Point): Array<Point?> {
         val neighbourCoord = arrayOfNulls<Point?>(4)
 
-        val x = roomCoords.x
-        val y = roomCoords.y
-
-        if (y > 0) {
-            neighbourCoord[Directions.NORTH] = Point(x, y - 1)
+        if (roomCoords.y > 0) {
+            neighbourCoord[Directions.NORTH] = Point(roomCoords.x, roomCoords.y - 1)
         }
 
-        if (x < map.size - 1) {
-            neighbourCoord[Directions.EAST] = Point(x + 1, y)
+        if (roomCoords.x < map.size - 1) {
+            neighbourCoord[Directions.EAST] = Point(roomCoords.x + 1, roomCoords.y)
         }
 
-        if (y < map[0].size - 1) {
-            neighbourCoord[Directions.SOUTH] = Point(x, y + 1)
+        if (roomCoords.y < map[0].size - 1) {
+            neighbourCoord[Directions.SOUTH] = Point(roomCoords.x, roomCoords.y + 1)
         }
 
-        if (x > 0) {
-            neighbourCoord[Directions.WEST] = Point(x - 1, y)
+        if (roomCoords.x > 0) {
+            neighbourCoord[Directions.WEST] = Point(roomCoords.x - 1, roomCoords.y)
         }
 
         return neighbourCoord
