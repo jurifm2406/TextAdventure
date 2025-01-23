@@ -100,7 +100,7 @@ class Controller {
             arrayOf(
                 "x",
                 model.hero.armor.name,
-                model.hero.armor.absorbtion.toString(),
+                model.hero.armor.absorption.toString(),
                 model.hero.armor.negation.toString()
             )
         )
@@ -110,7 +110,7 @@ class Controller {
                 arrayOf(
                     id.toString(),
                     armor.name,
-                    armor.absorbtion.toString(),
+                    armor.absorption.toString(),
                     round(armor.negation).toString()
                 )
             )
