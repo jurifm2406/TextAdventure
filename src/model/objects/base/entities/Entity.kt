@@ -2,6 +2,7 @@ package model.objects.base.entities
 
 import model.objects.base.Inventory
 import model.objects.base.item.Armor
+import model.objects.base.item.Item
 import model.objects.base.item.Weapon
 import model.objects.world.Room
 import kotlin.math.floor
@@ -15,6 +16,16 @@ abstract class Entity(
     var room: Room
 ) {
     fun attack(target: Entity) {
-        target.health -= floor((weapon.damage - target.armor.absorbtion) * target.armor.negation) as Int
+        target.health -= floor((weapon.damage - target.armor.absorption) * target.armor.negation) as Int
+    }
+
+    fun pickupItem(item: Item) {
+        room.inventory.removeItem(item)
+        inventory.addItem(item)
+    }
+
+    fun dropItem(item: Item) {
+        inventory.removeItem(item)
+        room.inventory.addItem(item)
     }
 }
