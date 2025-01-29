@@ -11,6 +11,7 @@ import kotlin.random.Random
 class Map(size: Point) {
     var map: Array<Array<Room?>> = Array(size.x) { arrayOfNulls(size.y) }
     val startRoom: Room
+    var currentRoom: Room
 
     init {
         // variables for map generation
@@ -18,7 +19,7 @@ class Map(size: Point) {
         val midY = (map[0].size - 1) / 2
 
         val roomQueue = mutableListOf<Room>()
-        var currentRoom = Room(Point(midX, midY))
+        currentRoom = Room(Point(midX, midY))
         map[midX][midY] = currentRoom
         roomQueue.add(currentRoom)
 
@@ -100,28 +101,45 @@ class Map(size: Point) {
 
         // add weapons to random number of rooms
         for (i in 0..<Random.nextInt(4, 6)) {
-            map[roomList[i].coords.x][roomList[i].coords.y]!!.inventory.addItem(Data.weapons[Random.nextInt(0, Data.weapons.size)])
+            map[roomList[i].coords.x][roomList[i].coords.y]!!.inventory.add(
+                Data.weapons[Random.nextInt(
+                    0,
+                    Data.weapons.size
+                )]
+            )
         }
         roomList.shuffle()
         // add armour to random number of rooms
-        for (i in 0..<Random.nextInt(4, 6)){
-            map[roomList[i].coords.x][roomList[i].coords.y]!!.inventory.addItem(Data.armors[Random.nextInt(0, Data.armors.size)])
+        for (i in 0..<Random.nextInt(4, 6)) {
+            map[roomList[i].coords.x][roomList[i].coords.y]!!.inventory.add(
+                Data.armors[Random.nextInt(
+                    0,
+                    Data.armors.size
+                )]
+            )
         }
         roomList.shuffle()
         // add enemies to random number of rooms
-        for (i in 0..<Random.nextInt(4, 6)){
-            map[roomList[i].coords.x][roomList[i].coords.y]!!.entities.add(Data.enemies[Random.nextInt(0, Data.enemies.size)])
-            map[roomList[i].coords.x][roomList[i].coords.y]!!.entities[0].armor = Data.armors[Random.nextInt(0, Data.armors.size)]
-            map[roomList[i].coords.x][roomList[i].coords.y]!!.entities[0].weapon = Data.weapons[Random.nextInt(0, Data.weapons.size)]
+        for (i in 0..<Random.nextInt(4, 6)) {
+            map[roomList[i].coords.x][roomList[i].coords.y]!!.entities.add(
+                Data.enemies[Random.nextInt(
+                    0,
+                    Data.enemies.size
+                )]
+            )
+            map[roomList[i].coords.x][roomList[i].coords.y]!!.entities[0].armor =
+                Data.armors[Random.nextInt(0, Data.armors.size)]
+            map[roomList[i].coords.x][roomList[i].coords.y]!!.entities[0].weapon =
+                Data.weapons[Random.nextInt(0, Data.weapons.size)]
             map[roomList[i].coords.x][roomList[i].coords.y]!!.entities[0].room = roomList[i]
         }
-        for(i in 0 ..< map.size) {
-            for(j in 0 ..< map[0].size) {
+        for (i in 0..<map.size) {
+            for (j in 0..<map[0].size) {
                 if (map[i][j] != null) {
-                    for (k in 0 ..< map[i][j]!!.inventory.content.size){
-                        print(map[i][j]!!.inventory.content[k].name)
+                    for (k in 0..<map[i][j]!!.inventory.size) {
+                        print(map[i][j]!!.inventory[k].name)
                     }
-                    for(l in 0..< map[i][j]!!.entities.size){
+                    for (l in 0..<map[i][j]!!.entities.size) {
                         print(map[i][j]!!.entities[l].name)
                     }
 
@@ -137,15 +155,19 @@ class Map(size: Point) {
         if (direction == Directions.NORTH && neighbours[Directions.NORTH] != null) {
             neighbours[Directions.NORTH]!!.entities.add(entity)
             entity.room = neighbours[Directions.NORTH]!!
+            currentRoom = neighbours[Directions.NORTH]!!
         } else if (direction == Directions.EAST && neighbours[Directions.EAST] != null) {
             neighbours[Directions.EAST]!!.entities.add(entity)
             entity.room = neighbours[Directions.EAST]!!
+            currentRoom = neighbours[Directions.EAST]!!
         } else if (direction == Directions.SOUTH && neighbours[Directions.SOUTH] != null) {
             neighbours[Directions.SOUTH]!!.entities.add(entity)
             entity.room = neighbours[Directions.SOUTH]!!
+            currentRoom = neighbours[Directions.SOUTH]!!
         } else if (direction == Directions.WEST && neighbours[Directions.WEST] != null) {
             neighbours[Directions.WEST]!!.entities.add(entity)
             entity.room = neighbours[Directions.WEST]!!
+            currentRoom = neighbours[Directions.WEST]!!
         } else {
             var dir = ""
 

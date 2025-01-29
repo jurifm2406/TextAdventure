@@ -16,16 +16,16 @@ abstract class Entity(
     var room: Room
 ) {
     fun attack(target: Entity) {
-        target.health -= floor((weapon.damage - target.armor.absorption) * target.armor.negation) as Int
+        target.health -= floor((weapon.damage - target.armor.absorption) * target.armor.negation).toInt()
     }
 
-    fun pickupItem(item: Item) {
-        room.inventory.removeItem(item)
-        inventory.addItem(item)
+    fun pickup(item: Item) {
+        room.inventory.remove(item)
+        inventory.add(item)
     }
 
-    fun dropItem(item: Item) {
-        inventory.removeItem(item)
-        room.inventory.addItem(item)
+    fun drop(item: Item) {
+        inventory.remove(item)
+        room.inventory.add(item)
     }
 }
