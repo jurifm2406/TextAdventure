@@ -16,7 +16,11 @@ abstract class Entity(
     var room: Room
 ) {
     fun attack(target: Entity) {
-        target.health -= floor((weapon.damage - target.armor.absorption) * target.armor.negation).toInt()
+        var damage = weapon.damage - target.armor.absorption
+        if (damage < 0){
+            damage = 0
+        }
+        target.health -= floor(damage * target.armor.negation).toInt()
     }
 
     fun pickup(item: Item) {

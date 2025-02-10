@@ -4,4 +4,6 @@
 17.1 Map generation debuggen und Anfang movement
 20.1 Directions überarbeitet und movement parseinput implementiert und map zeigt Hero Raum
 22.1 hinzufügen von Weapons armour and enemies in Data und platzieren in zufällige Räume
-29.1 inventory handling, controller improvements, 
+29.1 inventory handling, controller improvements,
+31.1 started simple Combat, inventory info, help
+10.2
