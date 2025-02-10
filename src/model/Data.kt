@@ -1,13 +1,13 @@
 package model
 
-import model.objects.base.Inventory
 import model.objects.base.entities.Enemy
 import model.objects.base.item.Armor
 import model.objects.base.item.Weapon
 
 object Data {
 
-    val weapons: Array<Weapon> = arrayOf(Weapon("Dagger", "A small, lightweight blade for quick and stealthy strikes.", 20),
+    val weapons: Array<Weapon> = arrayOf(
+        Weapon("Dagger", "A small, lightweight blade for quick and stealthy strikes.", 20),
         Weapon("Shortsword", "A versatile, one-handed sword ideal for close combat.", 40),
         Weapon("Longsword", "A balanced sword with reach for precise strikes.", 50),
         Weapon("Rapier", "A slender, agile weapon for thrusting attacks.", 45),
@@ -29,20 +29,31 @@ object Data {
         Weapon("Claymore", "A large, two-handed sword with a distinctive hilt and guard.", 80)
     )
 
-    val armors: Array<Armor> = arrayOf( Armor("Chainmail", "Interlinked metal rings providing decent defense.", 2, 40.0),
-        Armor("Studded-leather", "Leather reinforced with metal studs for added durability.", 1, 35.0),
-        Armor("Scale-mail", "Armor made of overlapping metal scales.", 2, 45.0),
-        Armor("Plate-armor", "Heavy and imposing armor for maximum protection", 4, 70.0),
-        Armor("Barbarian-fur-armor", "Thick fur armor for protection against the cold and physical attacks.", 2, 50.0),
-        Armor("Paladin's-holy-plate", "Armor imbued with holy magic for protection against evil.", 3, 60.0),
-        Armor("Sorcerer's-enchanted-robe", "Robes enchanted with magical barriers.", 3, 40.0),
-        Armor("Knight's-shining-armor", "Shiny, highly protective armor for noble knights.", 4, 80.0),
-        Armor("Dwarven-ironclad", "Heavy armor crafted by dwarves for maximum protection.", 4, 75.0),
-        Armor("Assassin's-Shadow-Cloak", "A cloak that grants enhanced stealth and agility to assassins.", 1, 30.0),
-        Armor("Elven-Leafweave", "Armor made from magically imbued leaves, providing both protection and agility.", 3, 35.0),
-        Armor("Dragonbone-Plate", "Armor forged from the bones of a dragon, offering unparalleled defense.", 4, 90.0),
-        Armor("Mystic-Silk-Robes", "Robes woven from mystical silk, granting protection and enhancing magical abilities.", 4, 40.0),
-        Armor("Necromancer's-Shroud", "A shroud imbued with necrotic energies, providing dark protection.", 4, 55.0)
+    val armors: Array<Armor> = arrayOf(
+        Armor("Chainmail", "Interlinked metal rings providing decent defense.", 2, 0.4),
+        Armor("Studded-leather", "Leather reinforced with metal studs for added durability.", 1, 0.35),
+        Armor("Scale-mail", "Armor made of overlapping metal scales.", 2, 0.45),
+        Armor("Plate-armor", "Heavy and imposing armor for maximum protection", 4, 0.7),
+        Armor("Barbarian-fur-armor", "Thick fur armor for protection against the cold and physical attacks.", 2, .50),
+        Armor("Paladin's-holy-plate", "Armor imbued with holy magic for protection against evil.", 3, 0.6),
+        Armor("Sorcerer's-enchanted-robe", "Robes enchanted with magical barriers.", 3, 0.4),
+        Armor("Knight's-shining-armor", "Shiny, highly protective armor for noble knights.", 4, 0.8),
+        Armor("Dwarven-ironclad", "Heavy armor crafted by dwarves for maximum protection.", 4, 0.75),
+        Armor("Assassin's-Shadow-Cloak", "A cloak that grants enhanced stealth and agility to assassins.", 1, 0.3),
+        Armor(
+            "Elven-Leafweave",
+            "Armor made from magically imbued leaves, providing both protection and agility.",
+            3,
+            0.35
+        ),
+        Armor("Dragonbone-Plate", "Armor forged from the bones of a dragon, offering unparalleled defense.", 4, 0.9),
+        Armor(
+            "Mystic-Silk-Robes",
+            "Robes woven from mystical silk, granting protection and enhancing magical abilities.",
+            4,
+            0.4
+        ),
+        Armor("Necromancer's-Shroud", "A shroud imbued with necrotic energies, providing dark protection.", 4, 0.55)
     )
 
     val enemies: Array<Enemy> = arrayOf(

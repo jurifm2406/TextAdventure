@@ -10,6 +10,7 @@ import model.objects.world.Directions
 import model.objects.world.ItemNotThereException
 import model.objects.world.RoomNotThereException
 import view.View
+import java.awt.Font
 import javax.swing.JTextPane
 import javax.swing.text.SimpleAttributeSet
 import javax.swing.text.StyleConstants
@@ -50,7 +51,7 @@ class Controller {
         updateInfo()
     }
 
-    fun updateMap() {
+    private fun updateMap() {
         view.content.sidebar.map.setValueAt("o", model.hero.room.coords.x, model.hero.room.coords.y)
 
         for (room in model.map.neighbours(model.hero.room.coords)) {
@@ -61,7 +62,7 @@ class Controller {
         }
     }
 
-    fun updateInfo() {
+    private fun updateInfo() {
         val infoData: MutableList<Array<String>> = mutableListOf()
 
         infoData.add(arrayOf("floor", "", "", model.floor.toString()))
@@ -121,7 +122,7 @@ class Controller {
         }
     }
 
-    fun parseInput(input: String) {
+    private fun parseInput(input: String) {
         val splitInput = input.lowercase().split(" ")
 
         if (splitInput.isEmpty()) {
@@ -197,20 +198,54 @@ class Controller {
                                 }
                             }
 
-                            try {
-                                model.hero.pickup(selection[splitInput[3].toInt()])
-                            } catch (e: IndexOutOfBoundsException) {
-                                view.content.output.respond("this item id doesn't correspond to an item in the current room")
-                            } catch (e: ItemNotThereException) {
-                                view.content.output.respond(e.message)
-                            }
-                        }
-
-                        else -> {
-                            view.content.output.respond("command ${splitInput[1]} doesn't exist!")
+                        try {
+                            model.hero.pickup(selection[splitInput[3].toInt()])
+                            updateInfo()
+                            view.content.output.respond("picked up ${splitInput[2]} ${selection[splitInput[3].toInt()].name}")
+                        } catch (e: IndexOutOfBoundsException) {
+                            view.content.output.respond("this item id doesn't correspond to an item in the current room")
+                        } catch (e: ItemNotThereException) {
+                            view.content.output.respond(e.message)
                         }
                     }
+
+                    "inspect" -> {
+                        if (model.hero.room.inventory.export().isEmpty()) {
+                            view.content.output.respond("there are no items in this room!")
+                            return
+                        }
+
+                        val style = SimpleAttributeSet()
+                        StyleConstants.setFontFamily(style, Font.MONOSPACED)
+
+                        val doc = view.content.output.styledDocument
+
+                        model.hero.room.inventory.export().forEach { block ->
+                            val maxLengths = Array(4) { 0 }
+                            block.forEach { row ->
+                                row.forEachIndexed { i, word ->
+                                    if (word.length + 2 > maxLengths[i]) {
+                                        maxLengths[i] = word.length + 2
+                                    }
+                                }
+                            }
+
+                            block.forEach { row ->
+                                row.forEachIndexed { i, word ->
+                                    println(word.padEnd(maxLengths[i]))
+                                    doc.insertString(doc.length, word.padEnd(maxLengths[i]), style)
+                                }
+
+                                doc.insertString(doc.length, "\n", style)
+                            }
+                        }
+                    }
+
+                    else -> {
+                        view.content.output.respond("command ${splitInput[1]} doesn't exist!")
+                    }
                 }
+            }
 
                 "inventory" -> {
                     if (splitInput.size < 4) {
@@ -222,18 +257,30 @@ class Controller {
                         "drop" -> {
                             val selection: List<Item>
 
-                            when (splitInput[2]) {
-                                "weapon" -> {
-                                    selection = model.hero.inventory.filterIsInstance<Weapon>()
+                        when (splitInput[2]) {
+                            "weapon" -> {
+                                selection = model.hero.inventory.filterIsInstance<Weapon>()
+                                if (selection.isEmpty()) {
+                                    view.content.output.respond("there are no weapons in your inventory!")
+                                    return
                                 }
+                            }
 
-                                "armor" -> {
-                                    selection = model.hero.inventory.filterIsInstance<Armor>()
+                            "armor" -> {
+                                selection = model.hero.inventory.filterIsInstance<Armor>()
+                                if (selection.isEmpty()) {
+                                    view.content.output.respond("there are no armors in your inventory!")
+                                    return
                                 }
+                            }
 
-                                "consumable" -> {
-                                    selection = model.hero.inventory.filterIsInstance<Consumable>()
+                            "consumable" -> {
+                                selection = model.hero.inventory.filterIsInstance<Consumable>()
+                                if (selection.isEmpty()) {
+                                    view.content.output.respond("there are no consumable in your inventory!")
+                                    return
                                 }
+                            }
 
                                 else -> {
                                     view.content.output.respond("${splitInput[2]} is no valid item class!")
@@ -241,14 +288,16 @@ class Controller {
                                 }
                             }
 
-                            try {
-                                model.hero.drop(selection[splitInput[3].toInt()])
-                            } catch (e: java.lang.IndexOutOfBoundsException) {
-                                view.content.output.respond("item id ${splitInput[2]} doesn't correspond to an item in your inventory")
-                            } catch (e: ItemNotThereException) {
-                                view.content.output.respond(e.message)
-                            }
+                        try {
+                            model.hero.drop(selection[splitInput[3].toInt()])
+                            updateInfo()
+                            view.content.output.respond("dropped ${splitInput[2]} ${selection[splitInput[3].toInt()].name}")
+                        } catch (e: IndexOutOfBoundsException) {
+                            view.content.output.respond("item id ${splitInput[2]} doesn't correspond to an item in your inventory")
+                        } catch (e: ItemNotThereException) {
+                            view.content.output.respond(e.message)
                         }
+                    }
 
                         else -> {
                             view.content.output.respond("command ${splitInput[1]} doesn't exist!")
@@ -257,15 +306,16 @@ class Controller {
                     }
                 }
 
-                "help" -> {
-                    if (splitInput.size < 2) {
-                        view.content.output.respond("prints information about available commands")
-                        view.content.output.respond("usage: help [command]")
-                        view.content.output.respond("commands:")
-                        view.content.output.respond("- move")
-                        view.content.output.respond("- inventory")
-                        view.content.output.respond("- room")
-                    }
+            "help" -> {
+                if (splitInput.size < 2) {
+                    view.content.output.respond("prints information about available commands")
+                    view.content.output.respond("usage: help [command]")
+                    view.content.output.respond("commands:")
+                    view.content.output.respond("- move")
+                    view.content.output.respond("- inventory")
+                    view.content.output.respond("- room")
+                    return
+                }
 
                     when (splitInput[1]) {
                         "move" -> {
