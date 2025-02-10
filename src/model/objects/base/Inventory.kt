@@ -22,24 +22,46 @@ class Inventory(var maxSize: Int) : ArrayList<Item>() {
         return super.remove(item)
     }
 
-    fun export() {
-        val export = mutableListOf<String>()
+    fun export(): Array<Array<Array<String>>> {
+        val export = mutableListOf<Array<Array<String>>>()
 
-        export.add("WEAPONS")
-        export.add("ID  NAME                DAMAGE          ")
-        filterIsInstance<Weapon>().forEachIndexed { i, weapon ->
-            export.add("$i  ${weapon.name}      ${weapon.damage}")
+        if (filterIsInstance<Weapon>().isNotEmpty()) {
+            val exportWeapons = mutableListOf<Array<String>>()
+            exportWeapons.add(arrayOf("WEAPONS", "", "", ""))
+            exportWeapons.add(arrayOf("ID", "NAME", "", "DAMAGE"))
+            filterIsInstance<Weapon>().forEachIndexed { i, weapon ->
+                exportWeapons.add(arrayOf(i.toString(), weapon.name, "", weapon.damage.toString()))
+            }
+            export.add(exportWeapons.toTypedArray())
         }
-        export.add("ARMORS")
-        export.add("ID  NAME        ABS NEG ")
-        filterIsInstance<Armor>().forEachIndexed { i, armor ->
-            export.add("$i  ${armor.name}       ${armor.absorption}     ${armor.negation}")
-        }
-        export.add("ITEMS")
-        export.add("ID  NAME        EFFECT")
-        filterIsInstance<Consumable>().forEachIndexed { i, item ->
-            export.add("$i  ${item.name}        ${item.description}")
 
+        if (filterIsInstance<Armor>().isNotEmpty()) {
+            val exportArmors = mutableListOf<Array<String>>()
+            exportArmors.add(arrayOf("ARMORS", "", "", ""))
+            exportArmors.add(arrayOf("ID", "NAME", "ABS", "NEG"))
+            filterIsInstance<Armor>().forEachIndexed { i, armor ->
+                exportArmors.add(
+                    arrayOf(
+                        i.toString(),
+                        armor.name,
+                        armor.absorption.toString(),
+                        (100 - armor.negation * 100).toString()
+                    )
+                )
+            }
+            export.add(exportArmors.toTypedArray())
         }
+
+        if (filterIsInstance<Consumable>().isNotEmpty()) {
+            val exportConsumables = mutableListOf<Array<String>>()
+            exportConsumables.add(arrayOf("CONSUMABLES", "", "", ""))
+            exportConsumables.add(arrayOf("ID", "NAME", "", "EFFECT"))
+            filterIsInstance<Consumable>().forEachIndexed { i, consumable ->
+                exportConsumables.add(arrayOf(i.toString(), consumable.name, "", consumable.description))
+            }
+            export.add(exportConsumables.toTypedArray())
+        }
+
+        return export.toTypedArray()
     }
 }
