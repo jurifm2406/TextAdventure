@@ -86,8 +86,10 @@ class Map(size: Point) {
             nextRoomQueue = mutableListOf()
         }
         startRoom = map[map.size / 2][map.size / 2]!!
+
         startRoom.inventory.add(Data.armors[Random.nextInt(Data.armors.size)])
         startRoom.inventory.add(Data.weapons[Random.nextInt(Data.weapons.size)])
+
 
 
         // create room list to place items and entities in

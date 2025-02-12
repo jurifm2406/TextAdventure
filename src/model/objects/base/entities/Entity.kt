@@ -38,31 +38,35 @@ abstract class Entity(
         if (item is Weapon) {
             if (weapon.name == "fists") {
                 weapon = item
+                inventory.remove(item)
             } else {
                 inventory.add(weapon)
                 weapon = item
+                inventory.remove(item)
             }
         }
 
         if (item is Armor) {
             if (armor.name == "nothing") {
                 armor = item
+                inventory.remove(item)
             } else {
                 inventory.add(armor)
                 armor = item
+                inventory.remove(item)
             }
         }
     }
 
-    fun unequip(type: Boolean) {
-        if (type) {
+    fun unequip(type: String) {
+        if (type == "weapon") {
             if (weapon.name == "fists") {
                 throw CantUnequipException(weapon.name)
             } else {
                 inventory.add(weapon)
                 weapon = Weapon("fists", "mighty fists", 2)
             }
-        } else {
+        } else if (type == "armor") {
             if (armor.name == "nothing") {
                 throw CantUnequipException(armor.name)
             } else {

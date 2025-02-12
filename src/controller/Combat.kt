@@ -17,19 +17,21 @@ class Combat(val enemy: Entity, val hero: Hero, val view: View) {
                 else -> view.content.output.respond("Invalid action.")
             }
         }
+        return true
     }
 
     private fun attack(): Boolean{
         hero.attack(enemy)
         if (enemy.health <= 0){
             view.content.output.respond("You killed the ${enemy.name}")
-            // get back to normal game
+            // remove enemy
+            hero.room.entities.remove(enemy)
             // enemy item drops
             return false
         }
         view.content.output.respond("You attacked ${enemy.name}, its health is now ${enemy.health}")
-        enemyTurn()
-        return true
+
+        return enemyTurn()
     }
 
     private fun defend() {
@@ -47,19 +49,26 @@ class Combat(val enemy: Entity, val hero: Hero, val view: View) {
         // optional
     }
 
-    private fun enemyTurn() {
+    private fun enemyTurn(): Boolean{
 
         enemy.attack(hero)
 
         // Check if hero is dead
         if (hero.health <= 0) {
             view.content.output.respond("You died!")
-            // respawn
-            return
+            for (item in hero.inventory) {
+                hero.room.inventory.add(item)
+            }
+            hero.inventory.clear()
+            view.content.output.respond("You respawned")
+            return false
 
         }
-        else view.content.output.respond("A ${enemy.name} attacked, your health is now ${hero.health}")
-        isCombatActive = true
+        else {
+            view.content.output.respond("A ${enemy.name} attacked, your health is now ${hero.health}")
+            isCombatActive = true
+            return true
+        }
     }
 
 }
