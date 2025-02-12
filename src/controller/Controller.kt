@@ -131,6 +131,8 @@ class Controller {
         }
         if (inCombat) {
             combat!!.combatParse(splitInput)
+            return
+        }
 
         } else {
             when (splitInput[0]) {
@@ -154,7 +156,6 @@ class Controller {
                             for (i in 0..<model.hero.room.entities.size) {
                                 view.content.output.respond(model.hero.room.entities[i].name)
                             }
-                            inCombat = true
                             combat = Combat(model.hero.room.entities.filterIsInstance<Enemy>()[0], model.hero, view)
                             view.content.output.respond("You entered Combat")
                         }
@@ -336,6 +337,12 @@ class Controller {
                             view.content.output.respond("- pickup [item id]: pickup item from room")
                         }
 
+                    "room" -> {
+                        view.content.output.respond("used to interact with the current room")
+                        view.content.output.respond("usage: room [action]")
+                        view.content.output.respond("- pickup [item class] [item id]: pickup item from room")
+                        view.content.output.respond("- inspect: list items in room")
+                    }
 
                         else -> {
                             view.content.output.respond("unrecognized command ${splitInput[1]}")
@@ -351,4 +358,11 @@ class Controller {
         }
     }
 
+            else -> {
+                selection = listOf()
+            }
+        }
+
+        return selection
+    }
 }
