@@ -130,7 +130,7 @@ class Controller {
             return
         }
         if (inCombat) {
-            combat!!.Combatparse(splitInput)
+            combat!!.combatParse(splitInput)
 
         } else {
             when (splitInput[0]) {
@@ -335,6 +335,7 @@ class Controller {
                             view.content.output.respond("- drop [item id]: drop item into room")
                             view.content.output.respond("- pickup [item id]: pickup item from room")
                         }
+
 
                         else -> {
                             view.content.output.respond("unrecognized command ${splitInput[1]}")
