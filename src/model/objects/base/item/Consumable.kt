@@ -1,5 +1,6 @@
 package model.objects.base.item
 
-class Consumable(name: String, description: String) : Item(name, description) {
-    fun effect() {}
-}
+import model.objects.base.entities.Entity
+
+class Consumable(name: String, description: String, val effect: (Entity) -> Unit, val destroyOnUse: Boolean = true) :
+    Item(name, description)
