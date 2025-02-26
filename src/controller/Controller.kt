@@ -31,7 +31,7 @@ fun JTextPane.respond(message: String?, bold: Boolean = true) {
 class Controller {
     private val model = Model("test")
     private val view = View(model)
-    private var combat : Combat? = null
+    private var combat: Combat? = null
 
     private val movement = mapOf(
         "north" to Directions.WEST,
@@ -137,7 +137,7 @@ class Controller {
         when (splitInput[0]) {
             "move" -> {
                 if (splitInput.size < 2) {
-                    view.content.output.respond("need a direction!")
+                    view.content.output.respond("usage: move [direction]!")
                     return
                 }
 
@@ -151,29 +151,140 @@ class Controller {
                     updateMap()
                     view.content.output.respond("moved to the ${splitInput[1]}")
 
-                        if (model.hero.room.entities.filterIsInstance<Enemy>().isNotEmpty()) {
-                            for (i in 0..<model.hero.room.entities.size) {
-                                view.content.output.respond(model.hero.room.entities[i].name)
-                            }
-                            combat = Combat(model.hero.room.entities.filterIsInstance<Enemy>()[0], model.hero, view)
-                            view.content.output.respond("you entered combat")
+                    if (model.hero.room.entities.filterIsInstance<Enemy>().isNotEmpty()) {
+                        for (i in 0..<model.hero.room.entities.size) {
+                            view.content.output.respond(model.hero.room.entities[i].name)
+                        }
+                        combat = Combat(model.hero.room.entities.filterIsInstance<Enemy>()[0], model.hero, view)
+                        view.content.output.respond("you entered combat")
+                    }
+
+                } catch (e: RoomNotThereException) {
+                    view.content.output.respond(e.message)
+                }
+            }
+
+            "inventory" -> {
+                if (splitInput.size < 2) {
+                    view.content.output.respond("usage: inventory [action]")
+                    return
+                }
+
+                when (splitInput[1]) {
+                    "drop" -> {
+                        if (splitInput.size < 4) {
+                            view.content.output.respond("usage: drop [item class] [item id]")
+                            return
                         }
 
-                    } catch (e: RoomNotThereException) {
-                        view.content.output.respond(e.message)
+                        val selection = createSelection(splitInput[2], model.hero.inventory)
+
+                        if (selection.isEmpty()) {
+                            view.content.output.respond("there are no items of type ${splitInput[2]} in your inventory")
+                        }
+
+                        try {
+                            model.hero.drop(selection[splitInput[3].toInt()])
+                            updateInfo()
+                            view.content.output.respond("dropped ${splitInput[2]} ${selection[splitInput[3].toInt()].name}")
+                        } catch (e: IndexOutOfBoundsException) {
+                            view.content.output.respond("item id ${splitInput[3]} doesn't correspond to an item in your inventory")
+                        } catch (e: ItemNotThereException) {
+                            view.content.output.respond(e.message)
+                        }
+                    }
+
+                    "equip" -> {
+                        if (splitInput.size < 4) {
+                            view.content.output.respond("usage: equip [item class] [item id]")
+                            return
+                        }
+
+                        if (splitInput[2] == "consumable") {
+                            view.content.output.respond("can't equip a consumable")
+                            return
+                        }
+
+                        val selection = createSelection(splitInput[2], model.hero.inventory)
+
+                        if (selection.isEmpty()) {
+                            view.content.output.respond("there are no items of type ${splitInput[2]} in your inventory")
+                        }
+
+                        try {
+                            model.hero.equip(selection[splitInput[3].toInt()])
+                            updateInfo()
+                            view.content.output.respond("equipped ${splitInput[2]} ${selection[splitInput[3].toInt()].name}")
+                        } catch (e: IndexOutOfBoundsException) {
+                            view.content.output.respond("item id ${splitInput[3]} doesn't correspond to an item in your inventory")
+                        } catch (e: ItemNotThereException) {
+                            view.content.output.respond(e.message)
+                        }
+                    }
+
+                    "unequip" -> {
+                        if (splitInput.size < 3) {
+                            view.content.output.respond("usage: unequip [item class]")
+                            return
+                        }
+
+                        if (splitInput[2] == "consumable") {
+                            view.content.output.respond("can't unequip a consumable")
+                            return
+                        }
+
+                        when (splitInput[2]) {
+                            "armor" -> {
+                                view.content.output.respond("unequipped armor ${model.hero.armor}")
+                                model.hero.unequip(splitInput[2])
+                                updateInfo()
+                            }
+
+                            "weapon" -> {
+                                view.content.output.respond("unequipped weapon ${model.hero.weapon}")
+                                model.hero.unequip(splitInput[2])
+                                updateInfo()
+                            }
+
+                            else -> {
+                                view.content.output.respond("can't unequip item of type ${splitInput[2]}")
+                            }
+                        }
+                    }
+
+                    "use" -> {
+                        if (splitInput.size < 3) {
+                            view.content.output.respond("usage: use [consumable id]")
+                        }
+
+                        val selection = model.hero.inventory.filterIsInstance<Consumable>()
+
+                        try {
+                            model.hero.use(selection[splitInput[2].toInt()], model.hero)
+                            updateInfo()
+                            updateMap()
+                        } catch (e: IndexOutOfBoundsException) {
+                            view.content.output.respond("no consumable with that index!")
+                        }
+                    }
+
+                    else -> {
+                        view.content.output.respond("command ${splitInput[1]} doesn't exist!")
+                        return
                     }
                 }
+            }
 
             "room" -> {
                 if (splitInput.size < 2) {
-                    view.content.output.respond("need subcommand")
+                    view.content.output.respond("usage: room [action]")
                     return
                 }
 
                 when (splitInput[1]) {
                     "pickup" -> {
                         if (splitInput.size < 4) {
-                            view.content.output.respond("need item class!")
+                            view.content.output.respond("usage: pickup [item class] [item id]")
                             return
                         }
 
@@ -232,101 +343,6 @@ class Controller {
                 }
             }
 
-            "inventory" -> {
-                if (splitInput.size < 2) {
-                    view.content.output.respond("need subcommand!")
-                    return
-                }
-
-                when (splitInput[1]) {
-                    "drop" -> {
-                        if (splitInput.size < 4) {
-                            view.content.output.respond("need item class and id!")
-                            return
-                        }
-
-                        val selection = createSelection(splitInput[2], model.hero.inventory)
-
-                        if (selection.isEmpty()) {
-                            view.content.output.respond("there are no items of type ${splitInput[2]} in your inventory")
-                        }
-
-                        try {
-                            model.hero.drop(selection[splitInput[3].toInt()])
-                            updateInfo()
-                            view.content.output.respond("dropped ${splitInput[2]} ${selection[splitInput[3].toInt()].name}")
-                        } catch (e: IndexOutOfBoundsException) {
-                            view.content.output.respond("item id ${splitInput[3]} doesn't correspond to an item in your inventory")
-                        } catch (e: ItemNotThereException) {
-                            view.content.output.respond(e.message)
-                        }
-                    }
-
-                    "equip" -> {
-                        if (splitInput.size < 4) {
-                            view.content.output.respond("need item class and id!")
-                            return
-                        }
-
-                        if (splitInput[2] == "consumable") {
-                            view.content.output.respond("can't equip a consumable")
-                            return
-                        }
-
-                        val selection = createSelection(splitInput[2], model.hero.inventory)
-
-                        if (selection.isEmpty()) {
-                            view.content.output.respond("there are no items of type ${splitInput[2]} in your inventory")
-                        }
-
-                        try {
-                            model.hero.equip(selection[splitInput[3].toInt()])
-                            updateInfo()
-                            view.content.output.respond("equipped ${splitInput[2]} ${selection[splitInput[3].toInt()].name}")
-                        } catch (e: IndexOutOfBoundsException) {
-                            view.content.output.respond("item id ${splitInput[3]} doesn't correspond to an item in your inventory")
-                        } catch (e: ItemNotThereException) {
-                            view.content.output.respond(e.message)
-                        }
-                    }
-
-                    "unequip" -> {
-                        if (splitInput.size < 3) {
-                            view.content.output.respond("need item class!")
-                            return
-                        }
-
-                        if (splitInput[2] == "consumable") {
-                            view.content.output.respond("can't unequip a consumable")
-                            return
-                        }
-
-                        when (splitInput[2]) {
-                            "armor" -> {
-                                view.content.output.respond("unequipped armor ${model.hero.armor}")
-                                model.hero.unequip(splitInput[2])
-                                updateInfo()
-                            }
-
-                            "weapon" -> {
-                                view.content.output.respond("unequipped weapon ${model.hero.weapon}")
-                                model.hero.unequip(splitInput[2])
-                                updateInfo()
-                            }
-
-                            else -> {
-                                view.content.output.respond("can't unequip item of type ${splitInput[2]}")
-                            }
-                        }
-                    }
-
-                    else -> {
-                        view.content.output.respond("command ${splitInput[1]} doesn't exist!")
-                        return
-                    }
-                }
-            }
-
             "help" -> {
                 if (splitInput.size < 2) {
                     view.content.output.respond("prints information about available commands")
@@ -356,6 +372,7 @@ class Controller {
                         view.content.output.respond("- drop [item class] [item id]: drop item into room")
                         view.content.output.respond("- equip [item class] [item id]: equip item")
                         view.content.output.respond("- unequip [item class]: unequip equipped item")
+                        view.content.output.respond("- use [consumable id]: use specified consumable")
                     }
 
                     "room" -> {
