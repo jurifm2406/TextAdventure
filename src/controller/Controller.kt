@@ -130,7 +130,13 @@ class Controller {
             return
         }
         if (combat != null) {
-            combat!!.Combatparse(splitInput)
+            if (!combat!!.combatParse(splitInput)){
+                combat = null
+                if (model.hero.health <= 0) {
+                    model.hero.room = model.map.startRoom
+                    updateMap()
+                }
+            }
             return
         }
 

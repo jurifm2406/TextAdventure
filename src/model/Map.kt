@@ -85,6 +85,11 @@ class Map(size: Point) {
         }
         startRoom = map[map.size / 2][map.size / 2]!!
 
+        startRoom.inventory.add(Data.armors[Random.nextInt(Data.armors.size)])
+        startRoom.inventory.add(Data.weapons[Random.nextInt(Data.weapons.size)])
+
+
+
         // create room list to place items and entities in
         val roomList = map.flatten().shuffled().filterNotNull().toMutableList()
         roomList.remove(startRoom)

@@ -7,23 +7,31 @@ import view.View
 class Combat(val enemy: Entity, val hero: Hero, val view: View) {
     var isCombatActive = true
 
-    fun Combatparse(input:List<String>){
+    fun combatParse(input:List<String>): Boolean{
         if (isCombatActive) {
             when (input[0]) {
-                "attack" -> {
-                    view.content.output.respond(enemy.health.toString())
-                    hero.attack(enemy)
-                    view.content.output.respond("You attacked ${enemy.name}")
-                    view.content.output.respond(enemy.health.toString())
-                }
+                "attack" -> return(attack())
                 "defend" -> defend()
                 "use" -> useItem()
                 "escape" -> escape()
                 else -> view.content.output.respond("Invalid action.")
             }
         }
-        else enemyTurn()
+        return true
+    }
 
+    private fun attack(): Boolean{
+        hero.attack(enemy)
+        if (enemy.health <= 0){
+            view.content.output.respond("You killed the ${enemy.name}")
+            // remove enemy
+            hero.room.entities.remove(enemy)
+            // enemy item drops
+            return false
+        }
+        view.content.output.respond("You attacked ${enemy.name}, its health is now ${enemy.health}")
+
+        return enemyTurn()
     }
 
     private fun defend() {
@@ -41,15 +49,26 @@ class Combat(val enemy: Entity, val hero: Hero, val view: View) {
         // optional
     }
 
-    private fun enemyTurn() {
-
+    private fun enemyTurn(): Boolean{
 
         enemy.attack(hero)
-        // Check if hero is still alive
+
+        // Check if hero is dead
         if (hero.health <= 0) {
-            // hero died
+            view.content.output.respond("You died!")
+            for (item in hero.inventory) {
+                hero.room.inventory.add(item)
+            }
+            hero.inventory.clear()
+            view.content.output.respond("You respawned")
+            return false
+
         }
-        isCombatActive = true
+        else {
+            view.content.output.respond("A ${enemy.name} attacked, your health is now ${hero.health}")
+            isCombatActive = true
+            return true
+        }
     }
 
 }
