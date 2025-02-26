@@ -11,7 +11,6 @@ import kotlin.random.Random
 class Map(size: Point) {
     var map: Array<Array<Room?>> = Array(size.x) { arrayOfNulls(size.y) }
     val startRoom: Room
-    var currentRoom: Room
 
     init {
         // variables for map generation
@@ -19,9 +18,8 @@ class Map(size: Point) {
         val midY = (map[0].size - 1) / 2
 
         val roomQueue = mutableListOf<Room>()
-        currentRoom = Room(Point(midX, midY))
-        map[midX][midY] = currentRoom
-        roomQueue.add(currentRoom)
+        map[midX][midY] = Room(Point(midX, midY))
+        roomQueue.add(map[midX][midY]!!)
 
         var nextRoomQueue = mutableListOf<Room>()
 
@@ -155,19 +153,15 @@ class Map(size: Point) {
         if (direction == Directions.NORTH && neighbours[Directions.NORTH] != null) {
             neighbours[Directions.NORTH]!!.entities.add(entity)
             entity.room = neighbours[Directions.NORTH]!!
-            currentRoom = neighbours[Directions.NORTH]!!
         } else if (direction == Directions.EAST && neighbours[Directions.EAST] != null) {
             neighbours[Directions.EAST]!!.entities.add(entity)
             entity.room = neighbours[Directions.EAST]!!
-            currentRoom = neighbours[Directions.EAST]!!
         } else if (direction == Directions.SOUTH && neighbours[Directions.SOUTH] != null) {
             neighbours[Directions.SOUTH]!!.entities.add(entity)
             entity.room = neighbours[Directions.SOUTH]!!
-            currentRoom = neighbours[Directions.SOUTH]!!
         } else if (direction == Directions.WEST && neighbours[Directions.WEST] != null) {
             neighbours[Directions.WEST]!!.entities.add(entity)
             entity.room = neighbours[Directions.WEST]!!
-            currentRoom = neighbours[Directions.WEST]!!
         } else {
             var dir = ""
 
