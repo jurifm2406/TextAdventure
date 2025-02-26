@@ -2,6 +2,7 @@ package model
 
 import model.objects.base.entities.Enemy
 import model.objects.base.item.Armor
+import model.objects.base.item.Consumable
 import model.objects.base.item.Weapon
 
 object Data {
@@ -56,13 +57,19 @@ object Data {
         Armor("Necromancer's-Shroud", "A shroud imbued with necrotic energies, providing dark protection.", 4, 0.55)
     )
 
+    val consumables: Array<Consumable> = arrayOf(
+        Consumable("small health potion", "heals 10 health", { entity -> entity.heal(10) }),
+        Consumable("medium health potion", "heals 25 health", { entity -> entity.heal(25) }),
+        Consumable("large health potion", "heals 40 health", { entity -> entity.heal(40) }),
+    )
+
     val enemies: Array<Enemy> = arrayOf(
         Enemy("Orc", 150),
         Enemy("Thief", 100),
         Enemy("Goblin", 80),
         Enemy("Troll", 200),
         Enemy("Bandit", 120),
-        Enemy("Skeleton Warrior", 90),
+        Enemy("Skeleton", 90),
         Enemy("Dark Mage", 130),
         Enemy("Giant Spider", 110),
         Enemy("Werewolf", 180),
