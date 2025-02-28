@@ -12,7 +12,6 @@ import model.objects.world.ItemNotThereException
 import model.objects.world.RoomNotThereException
 import view.View
 import java.awt.Font
-import java.awt.SplashScreen
 import javax.swing.JTextPane
 import javax.swing.text.SimpleAttributeSet
 import javax.swing.text.StyleConstants
@@ -124,7 +123,7 @@ class Controller {
     }
 
     private fun parseInput(input: String) {
-        var splitInput = input.split(" ")
+        val splitInput = input.split(" ")
 
         if (splitInput.isEmpty()) {
             view.content.output.respond("no command specified!")
@@ -138,7 +137,6 @@ class Controller {
                 2 -> {
                     view.content.sidebar.map.setValueAt("x", model.hero.room.coords.x, model.hero.room.coords.y)
                     model.hero.room = model.map.startRoom
-                    model.map.currentRoom = model.map.startRoom
                     model.hero.health = 300
                     updateMap()
                     combat = null
@@ -151,7 +149,6 @@ class Controller {
                         }
                         // could be random room or previous room
                         model.hero.room = room
-                        model.map.currentRoom = room
 
                         updateMap()
                         combat = null
@@ -164,9 +161,7 @@ class Controller {
             return
         }
 
-        for (word in splitInput) {
-            word.lowercase()
-        }
+        splitInput.forEach { it.lowercase() }
 
         when (splitInput[0]) {
             "move" -> {
