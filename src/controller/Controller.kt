@@ -12,7 +12,11 @@ import model.objects.world.ItemNotThereException
 import model.objects.world.RoomNotThereException
 import view.View
 import java.awt.Font
+import java.awt.event.ActionEvent
+import javax.swing.AbstractAction
+import javax.swing.JTextField
 import javax.swing.JTextPane
+import javax.swing.KeyStroke
 import javax.swing.text.SimpleAttributeSet
 import javax.swing.text.StyleConstants
 import kotlin.math.round
@@ -32,6 +36,8 @@ class Controller {
     private val model = Model("test")
     private val view = View(model)
     private var combat: Combat? = null
+    private val history: MutableList<String> = mutableListOf()
+    private var historyIndex = -1
 
     private val movement = mapOf(
         "north" to Directions.WEST,
@@ -44,9 +50,28 @@ class Controller {
         view.menuBar.exit.addActionListener { exitProcess(0) }
         view.content.input.addActionListener {
             view.content.output.respond(view.content.input.text, false)
+            history.add(0, view.content.input.text)
             parseInput(view.content.input.text)
             view.content.input.text = ""
         }
+        view.content.input.getInputMap(JTextField.WHEN_FOCUSED).put(KeyStroke.getKeyStroke("UP"), "arrowUp")
+        view.content.input.getInputMap(JTextField.WHEN_FOCUSED).put(KeyStroke.getKeyStroke("DOWN"), "arrowDown")
+        view.content.input.actionMap.put("arrowUp", object : AbstractAction() {
+            override fun actionPerformed(e: ActionEvent) {
+                if (history.size - 1 > historyIndex) {
+                    historyIndex++
+                    view.content.input.text = history[historyIndex]
+                }
+            }
+        })
+        view.content.input.actionMap.put("arrowDown", object : AbstractAction() {
+            override fun actionPerformed(e: ActionEvent) {
+                if (historyIndex > 0) {
+                    historyIndex--
+                    view.content.input.text = history[historyIndex]
+                }
+            }
+        })
         updateMap()
         updateInfo()
     }
