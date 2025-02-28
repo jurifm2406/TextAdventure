@@ -12,6 +12,7 @@ import model.objects.world.ItemNotThereException
 import model.objects.world.RoomNotThereException
 import view.View
 import java.awt.Font
+import java.awt.SplashScreen
 import javax.swing.JTextPane
 import javax.swing.text.SimpleAttributeSet
 import javax.swing.text.StyleConstants
@@ -44,7 +45,7 @@ class Controller {
         view.menuBar.exit.addActionListener { exitProcess(0) }
         view.content.input.addActionListener {
             view.content.output.respond(view.content.input.text, false)
-            parseInput(view.content.input.text.lowercase())
+            parseInput(view.content.input.text)
             view.content.input.text = ""
         }
         updateMap()
@@ -123,21 +124,48 @@ class Controller {
     }
 
     private fun parseInput(input: String) {
-        val splitInput = input.split(" ")
+        var splitInput = input.split(" ")
 
         if (splitInput.isEmpty()) {
             view.content.output.respond("no command specified!")
             return
         }
         if (combat != null) {
-            if (!combat!!.combatParse(splitInput)){
-                combat = null
-                if (model.hero.health <= 0) {
+
+            when (combat!!.combatParse(splitInput)){
+                0 -> return
+                1 -> {combat = null }
+                2 -> {
+                    view.content.sidebar.map.setValueAt("x", model.hero.room.coords.x, model.hero.room.coords.y)
                     model.hero.room = model.map.startRoom
+                    model.map.currentRoom = model.map.startRoom
+                    model.hero.health = 300
                     updateMap()
+                    combat = null
+                    return
+                }
+                3 -> {
+                    for (room in model.map.neighbours(model.hero.room.coords)) {
+                        if (room == null) {
+                            continue
+                        }
+                        // could be random room or previous room
+                        model.hero.room = room
+                        model.map.currentRoom = room
+
+                        updateMap()
+                        combat = null
+
+                        break
+                    }
+                    return
                 }
             }
             return
+        }
+
+        for (word in splitInput) {
+            word.lowercase()
         }
 
         when (splitInput[0]) {

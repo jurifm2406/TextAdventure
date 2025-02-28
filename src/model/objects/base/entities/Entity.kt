@@ -19,10 +19,10 @@ abstract class Entity(
 ) {
     var health: Int = maxHealth
 
-    fun attack(target: Entity) {
+    fun attack(target: Entity, multiplier: Double) {
         var damage = weapon.damage - target.armor.absorption
         damage = if (damage < 0) 0 else damage
-        target.health -= floor(damage * target.armor.negation).toInt()
+        target.health -= floor(damage * target.armor.negation * multiplier).toInt()
     }
 
     fun pickup(item: Item) {

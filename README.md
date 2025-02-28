@@ -67,7 +67,7 @@ point marked with ? considered nice to have but optional
 - [X] UI 15.1.
 - [X] map generation 27.1
 - [X] movement 22.1.
-- [ ] items and entities in rooms 31.1.
-- [ ] simple combat 10.2.
+- [X] items and entities in rooms 31.1.
+- [X] simple combat 10.2.
 - [ ] advanced combat 24.2.
 - [ ] progression 10.3.
