@@ -158,12 +158,12 @@ class Controller {
 
             when (combat!!.combatParse(splitInput)){
                 0 -> return
-                1 -> {combat = null }
+                1 -> {
+                    combat = null
+                    return
+                }
                 2 -> {
-                    view.content.sidebar.map.setValueAt("x", model.hero.room.coords.x, model.hero.room.coords.y)
-                    model.hero.room = model.map.startRoom
-                    model.hero.health = 300
-                    updateMap()
+                    heroDeath()
                     combat = null
                     return
                 }
@@ -471,5 +471,17 @@ class Controller {
         }
 
         return selection
+    }
+    private fun heroDeath(){
+        view.content.output.respond("You died!")
+        for (item in model.hero.inventory) {
+            model.hero.room.inventory.add(item)
+        }
+        model.hero.inventory.clear()
+        view.content.output.respond("You respawned")
+        view.content.sidebar.map.setValueAt("x", model.hero.room.coords.x, model.hero.room.coords.y)
+        model.hero.room = model.map.startRoom
+        model.hero.health = 300
+        updateMap()
     }
 }
