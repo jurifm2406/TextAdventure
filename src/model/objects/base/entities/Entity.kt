@@ -8,7 +8,6 @@ import model.objects.base.item.Weapon
 import model.objects.world.CantUnequipException
 import model.objects.world.Room
 import java.awt.Point
-import kotlin.math.floor
 
 abstract class Entity(
     val name: String,
@@ -18,7 +17,8 @@ abstract class Entity(
     var armor: Armor = Armor(),
     var room: Room,
     val effects: MutableList<(Entity) -> Unit> = mutableListOf(),
-    var stunned: Boolean = false
+    var stunned: Boolean = false,
+    var absorption: Int = 0
 ) {
     var health: Int = maxHealth
 
@@ -40,6 +40,10 @@ abstract class Entity(
         }
     }
 
+    fun defend() {
+        absorption += armor.absorption
+    }
+
     fun heal(amount: Int) {
         health += amount
         health = if (health > maxHealth) maxHealth else health
@@ -51,10 +55,11 @@ abstract class Entity(
     }
 
     fun attack(target: Entity, multiplier: Double) {
-        var damage = weapon.damage - target.armor.absorption
+        var damage = (weapon.damage * multiplier - target.absorption).toInt()
+        target.absorption = 0
         damage = if (damage < 0) 0 else damage
         weapon.effects.forEach { target.effects.add(it) }
-        target.damage(floor(damage * target.armor.negation * multiplier).toInt())
+        target.damage(damage)
     }
 
     fun pickup(item: Item) {
@@ -97,14 +102,14 @@ abstract class Entity(
                 throw CantUnequipException(weapon.name)
             } else {
                 inventory.add(weapon)
-                weapon = Weapon("fists", "mighty fists", 2)
+                weapon = Weapon()
             }
         } else if (type == "armor") {
             if (armor.name == "nothing") {
                 throw CantUnequipException(armor.name)
             } else {
                 inventory.add(armor)
-                armor = Armor("nothing", "bare skin", 0, 1.0)
+                armor = Armor()
             }
         }
     }

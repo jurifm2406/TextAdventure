@@ -32,6 +32,7 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
                     hero.tick()
                     return enemyTurn()
                 }
+
                 else -> view.content.output.respond("Invalid action.")
             }
         } else if (mode == 1) {
@@ -107,8 +108,8 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
             view.content.output.respond("You don't have enough action points to defend")
             return 0
         }
+        hero.defend()
         actionPoints -= hero.armor.actionPoints
-        damageMultiplierEnemy *= hero.armor.negation
 
         view.content.output.respond("You now have $actionPoints action points")
         view.content.output.respond("You take a defensive position the ${enemy.name} now does $damageMultiplierEnemy times damage")
@@ -140,7 +141,7 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
 
     private fun enemyTurn(): Int {
 
-        if(enemy.stunned == true){
+        if (enemy.stunned == true) {
             view.content.output.respond("The ${enemy.name} is stunned")
             return 0
         }
