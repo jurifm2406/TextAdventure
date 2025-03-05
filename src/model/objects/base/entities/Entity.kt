@@ -36,7 +36,7 @@ abstract class Entity(
         stunned = false
         effects.forEach {
             it(this)
-            effects.remove { it }
+            effects.remove(it)
         }
     }
 
