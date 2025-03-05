@@ -3,24 +3,24 @@ package controller
 import model.objects.base.entities.Entity
 import model.objects.base.entities.Hero
 import view.View
-import kotlin.random.Random
-import kotlin.streams.asSequence
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlin.random.Random
+import kotlin.streams.asSequence
 
 
-class Combat(val enemy: Entity, val hero: Hero, val view: View) {
-    var damageMultiplierHero: Double = 1.0
-    var damageMultiplierEnemy: Double = 1.0
-    var mode = 0
-    var start = System.currentTimeMillis()
-    var end = System.currentTimeMillis()
-    var puzzle = ""
-    var score = 0.0
-    var actionPoints = 3
+class Combat(private val enemy: Entity, private val hero: Hero, private val view: View) {
+    private var damageMultiplierHero: Double = 1.0
+    private var damageMultiplierEnemy: Double = 1.0
+    private var mode = 0
+    private var start: Long = 0
+    private var end: Long = 0
+    private var puzzle = ""
+    private var score = 0.0
+    private var actionPoints = 3
 
-    fun combatParse(input:List<String>): Int{
-        if(mode == 0) {
+    fun combatParse(input: List<String>): Int {
+        if (mode == 0) {
             when (input[0].lowercase()) {
                 "attack" -> return (attack(input[0]))
                 "defend" -> return (defend())
@@ -29,15 +29,14 @@ class Combat(val enemy: Entity, val hero: Hero, val view: View) {
                 "end" -> return enemyTurn()
                 else -> view.content.output.respond("Invalid action.")
             }
-        }
-        else if(mode == 1) {
+        } else if (mode == 1) {
             return attack(input[0])
         }
         return 0
     }
 
-    private fun attack(input:String): Int {
-        if (actionPoints < hero.weapon.actionPoint){
+    private fun attack(input: String): Int {
+        if (actionPoints < hero.weapon.actionPoints) {
             view.content.output.respond("You don't have enough actionpoints to use that weapon")
             return 0
         }
@@ -76,8 +75,8 @@ class Combat(val enemy: Entity, val hero: Hero, val view: View) {
             }
         }
         if (mode == 0) {
-            actionPoints -= hero.weapon.actionPoint
-            view.content.output.respond("You now have ${actionPoints} action points")
+            actionPoints -= hero.weapon.actionPoints
+            view.content.output.respond("You now have $actionPoints action points")
             hero.attack(enemy, (damageMultiplierHero + score))
 
             damageMultiplierHero = 1.0
@@ -97,28 +96,28 @@ class Combat(val enemy: Entity, val hero: Hero, val view: View) {
         return 0
     }
 
-    private fun defend(): Int{
+    private fun defend(): Int {
 
-        if (actionPoints < hero.armor.actionpoint){
+        if (actionPoints < hero.armor.actionPoints) {
             view.content.output.respond("You don't have enough action points to defend")
             return 0
         }
-        actionPoints -= hero.armor.actionpoint
+        actionPoints -= hero.armor.actionPoints
         damageMultiplierEnemy *= hero.armor.negation
 
-        view.content.output.respond("You now have ${actionPoints} action points")
+        view.content.output.respond("You now have $actionPoints action points")
         view.content.output.respond("You take a defensive position the ${enemy.name} now does $damageMultiplierEnemy times damage")
         return 0
     }
 
-    private fun useItem(): Int{
-       // optional
+    private fun useItem(): Int {
+        // optional
 
         return 0
     }
 
-    private fun escape(): Int{
-        if (actionPoints < 3){
+    private fun escape(): Int {
+        if (actionPoints < 3) {
             view.content.output.respond("You don't have enough action points to escape")
             return 0
         }
@@ -134,22 +133,22 @@ class Combat(val enemy: Entity, val hero: Hero, val view: View) {
 
     }
 
-    private fun enemyTurn(): Int{
+    private fun enemyTurn(): Int {
         actionPoints += 3
-        enemy.attack(hero,damageMultiplierEnemy)
+        enemy.attack(hero, damageMultiplierEnemy)
 
         damageMultiplierEnemy = 1.0
 
         // Check if hero is dead
         if (hero.health <= 0) {
             return 2
-        }
-        else {
+        } else {
             view.content.output.respond("A ${enemy.name} attacked, your health is now ${hero.health}")
             return 0
         }
     }
-    private fun needlemanWunsch(string1: String, string2: String): Double{
+
+    private fun needlemanWunsch(string1: String, string2: String): Double {
         // match algorithm
         val rows = string1.length + 1
         val cols = string2.length + 1
@@ -158,28 +157,25 @@ class Combat(val enemy: Entity, val hero: Hero, val view: View) {
         var left: Int
         var right: Int
 
-        for (i in 0 until rows) {
+        for (i in 0..<rows) {
             matrix[i][0] = i * -2
         }
-        for (j in 0 until cols) {
+        for (j in 0..<cols) {
             matrix[0][j] = j * -2
         }
 
-        for (i in 1 until rows) {
-            for (j in 1 until cols) {
-                if (string1[i - 1] == string2[j - 1]) {
-                    match = matrix[i - 1][j - 1] + 1
-                }
-                else{
-                    match = matrix[i - 1][j - 1] -1
+        for (i in 1..<rows) {
+            for (j in 1..<cols) {
+                match = if (string1[i - 1] == string2[j - 1]) {
+                    matrix[i - 1][j - 1] + 1
+                } else {
+                    matrix[i - 1][j - 1] - 1
                 }
                 left = matrix[i][j - 1] - 2
                 right = matrix[i - 1][j] - 2
-                matrix[i][j] = maxOf(left,right,match)
+                matrix[i][j] = maxOf(left, right, match)
             }
         }
         return matrix[rows - 1][cols - 1].toDouble() + 5.0
-
     }
-
 }
