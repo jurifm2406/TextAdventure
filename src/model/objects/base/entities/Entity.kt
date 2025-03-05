@@ -17,7 +17,8 @@ abstract class Entity(
     var weapon: Weapon = Weapon(),
     var armor: Armor = Armor(),
     var room: Room,
-    val effects: MutableList<(Entity) -> Unit> = mutableListOf()
+    val effects: MutableList<(Entity) -> Unit> = mutableListOf(),
+    var stunned: Boolean = false
 ) {
     var health: Int = maxHealth
 
@@ -32,7 +33,11 @@ abstract class Entity(
     }
 
     fun tick() {
-        effects.forEach { it(this) }
+        stunned = false
+        effects.forEach {
+            it(this)
+            effects.remove { it }
+        }
     }
 
     fun heal(amount: Int) {
@@ -48,6 +53,7 @@ abstract class Entity(
     fun attack(target: Entity, multiplier: Double) {
         var damage = weapon.damage - target.armor.absorption
         damage = if (damage < 0) 0 else damage
+        weapon.effects.forEach { target.effects.add(it) }
         target.damage(floor(damage * target.armor.negation * multiplier).toInt())
     }
 
