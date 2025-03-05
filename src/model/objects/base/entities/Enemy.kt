@@ -10,8 +10,8 @@ class Enemy(
     name: String = "",
     health: Int = 10,
     inventory: Inventory = Inventory(5),
-    weapon: Weapon = Weapon("fists", "mighty fists", 2),
-    armor: Armor = Armor("nothing", "bare skin", 0, 1.0),
+    weapon: Weapon = Weapon(),
+    armor: Armor = Armor(),
     room: Room = Room(Point(-1, -1))
 ) :
     Entity(name, health, inventory, weapon, armor, room)

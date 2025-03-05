@@ -1,3 +1,9 @@
 package model.objects.base.item
 
-class Armor(name: String, description: String, val absorption: Int, val negation: Double, val actionpoint: Int = 1) : Item(name, description)
+class Armor(
+    name: String = "nothing",
+    description: String = "bare skin",
+    val absorption: Int = 0,
+    val negation: Double = 1.0,
+    val actionPoints: Int = 1
+) : Item(name, description)
