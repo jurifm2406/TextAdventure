@@ -26,7 +26,12 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
                 "defend" -> return (defend())
                 "use" -> return (useItem())
                 "escape" -> return (escape())
-                "end" -> return enemyTurn()
+                "end" -> {
+                    actionPoints += 3
+                    enemy.tick()
+                    hero.tick()
+                    return enemyTurn()
+                }
                 else -> view.content.output.respond("Invalid action.")
             }
         } else if (mode == 1) {
@@ -134,7 +139,11 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
     }
 
     private fun enemyTurn(): Int {
-        actionPoints += 3
+
+        if(enemy.stunned == true){
+            view.content.output.respond("The ${enemy.name} is stunned")
+            return 0
+        }
         enemy.attack(hero, damageMultiplierEnemy)
 
         damageMultiplierEnemy = 1.0
