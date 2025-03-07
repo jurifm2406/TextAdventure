@@ -19,7 +19,6 @@ import javax.swing.JTextPane
 import javax.swing.KeyStroke
 import javax.swing.text.SimpleAttributeSet
 import javax.swing.text.StyleConstants
-import kotlin.math.round
 import kotlin.system.exitProcess
 
 fun JTextPane.respond(message: String?, bold: Boolean = true) {
@@ -90,30 +89,29 @@ class Controller {
     private fun updateInfo() {
         val infoData: MutableList<Array<String>> = mutableListOf()
 
-        infoData.add(arrayOf("floor", "", "", model.floor.toString()))
-        infoData.add(arrayOf("health", "", "", model.hero.health.toString()))
-        infoData.add(Array(4) { "" })
+        infoData.add(arrayOf("floor", "", model.floor.toString()))
+        infoData.add(arrayOf("health", "", model.hero.health.toString()))
+        infoData.add(Array(3) { "" })
 
-        infoData.add(arrayOf("WEAPONS", "", "", ""))
-        infoData.add(arrayOf("id", "name", "", "dmg"))
+        infoData.add(arrayOf("WEAPONS", "", ""))
+        infoData.add(arrayOf("id", "name", "dmg"))
 
-        infoData.add(arrayOf("x", model.hero.weapon.name, "", model.hero.weapon.damage.toString()))
+        infoData.add(arrayOf("x", model.hero.weapon.name, model.hero.weapon.damage.toString()))
 
         model.hero.inventory.filterIsInstance<Weapon>().forEachIndexed { id, weapon ->
-            infoData.add(arrayOf(id.toString(), weapon.name, "", weapon.damage.toString()))
+            infoData.add(arrayOf(id.toString(), weapon.name, weapon.damage.toString()))
         }
 
-        infoData.add(Array(4) { "" })
+        infoData.add(Array(3) { "" })
 
-        infoData.add(arrayOf("ARMOR", "", "", ""))
-        infoData.add(arrayOf("id", "name", "abs", "neg"))
+        infoData.add(arrayOf("ARMOR", "", ""))
+        infoData.add(arrayOf("id", "name", "abs"))
 
         infoData.add(
             arrayOf(
                 "x",
                 model.hero.armor.name,
                 model.hero.armor.absorption.toString(),
-                model.hero.armor.negation.toString()
             )
         )
 
@@ -123,23 +121,22 @@ class Controller {
                     id.toString(),
                     armor.name,
                     armor.absorption.toString(),
-                    round(armor.negation).toString()
                 )
             )
         }
 
-        infoData.add(Array(4) { "" })
+        infoData.add(Array(3) { "" })
 
-        infoData.add(arrayOf("ITEMS", "", "", ""))
-        infoData.add(arrayOf("id", "name", "", "effect"))
+        infoData.add(arrayOf("ITEMS", "", ""))
+        infoData.add(arrayOf("id", "name", "effect"))
 
         model.hero.inventory.filterIsInstance<Consumable>().forEachIndexed { id, consumable ->
-            infoData.add(arrayOf(id.toString(), consumable.name, "", consumable.description))
+            infoData.add(arrayOf(id.toString(), consumable.name, consumable.description))
         }
 
-        infoData.add(Array(4) { "" })
+        infoData.add(Array(3) { "" })
 
-        model.infoModel.setDataVector(infoData.toTypedArray(), arrayOf("0", "1", "2", "3"))
+        model.infoModel.setDataVector(infoData.toTypedArray(), arrayOf("0", "1", "2"))
 
         view.content.sidebar.informationColumnWidths.forEachIndexed { column, widthPercentage ->
             view.content.sidebar.information.columnModel.getColumn(column).preferredWidth =
@@ -156,17 +153,19 @@ class Controller {
         }
         if (combat != null) {
 
-            when (combat!!.combatParse(splitInput)){
+            when (combat!!.combatParse(splitInput)) {
                 0 -> return
                 1 -> {
                     combat = null
                     return
                 }
+
                 2 -> {
                     heroDeath()
                     combat = null
                     return
                 }
+
                 3 -> {
                     for (room in model.map.neighbours(model.hero.room.coords)) {
                         if (room == null) {
@@ -472,7 +471,8 @@ class Controller {
 
         return selection
     }
-    private fun heroDeath(){
+
+    private fun heroDeath() {
         view.content.output.respond("You died!")
         for (item in model.hero.inventory) {
             model.hero.room.inventory.add(item)

@@ -27,25 +27,24 @@ class Inventory(var maxSize: Int) : ArrayList<Item>() {
 
         if (filterIsInstance<Weapon>().isNotEmpty()) {
             val exportWeapons = mutableListOf<Array<String>>()
-            exportWeapons.add(arrayOf("WEAPONS", "", "", ""))
-            exportWeapons.add(arrayOf("ID", "NAME", "", "DAMAGE"))
+            exportWeapons.add(arrayOf("WEAPONS", "", ""))
+            exportWeapons.add(arrayOf("ID", "NAME", "DAMAGE"))
             filterIsInstance<Weapon>().forEachIndexed { i, weapon ->
-                exportWeapons.add(arrayOf(i.toString(), weapon.name, "", weapon.damage.toString()))
+                exportWeapons.add(arrayOf(i.toString(), weapon.name, weapon.damage.toString()))
             }
             export.add(exportWeapons.toTypedArray())
         }
 
         if (filterIsInstance<Armor>().isNotEmpty()) {
             val exportArmors = mutableListOf<Array<String>>()
-            exportArmors.add(arrayOf("ARMORS", "", "", ""))
-            exportArmors.add(arrayOf("ID", "NAME", "ABS", "NEG"))
+            exportArmors.add(arrayOf("ARMORS", "", ""))
+            exportArmors.add(arrayOf("ID", "NAME", "ABS"))
             filterIsInstance<Armor>().forEachIndexed { i, armor ->
                 exportArmors.add(
                     arrayOf(
                         i.toString(),
                         armor.name,
                         armor.absorption.toString(),
-                        (100 - armor.negation * 100).toString()
                     )
                 )
             }
@@ -54,10 +53,10 @@ class Inventory(var maxSize: Int) : ArrayList<Item>() {
 
         if (filterIsInstance<Consumable>().isNotEmpty()) {
             val exportConsumables = mutableListOf<Array<String>>()
-            exportConsumables.add(arrayOf("CONSUMABLES", "", "", ""))
-            exportConsumables.add(arrayOf("ID", "NAME", "", "EFFECT"))
+            exportConsumables.add(arrayOf("CONSUMABLES", "", ""))
+            exportConsumables.add(arrayOf("ID", "NAME", "EFFECT"))
             filterIsInstance<Consumable>().forEachIndexed { i, consumable ->
-                exportConsumables.add(arrayOf(i.toString(), consumable.name, "", consumable.description))
+                exportConsumables.add(arrayOf(i.toString(), consumable.name, consumable.description))
             }
             export.add(exportConsumables.toTypedArray())
         }
