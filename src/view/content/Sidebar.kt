@@ -12,7 +12,7 @@ import javax.swing.table.DefaultTableModel
 class Sidebar(infoModel: DefaultTableModel, mapSize: Point) : JPanel() {
     val map = JTable(mapSize.x, mapSize.y)
     val information = JTable(infoModel)
-    val informationColumnWidths = arrayOf(0.25, 0.45, 0.15, 0.15)
+    val informationColumnWidths = arrayOf(0.25, 0.6, 0.15)
 
     init {
         layout = BorderLayout(0, 10)
