@@ -7,15 +7,15 @@ import model.objects.base.item.Weapon
 
 object Data {
     val weapons: Array<Weapon> = arrayOf(
-        Weapon("hammer", "stuns", 0),
-        Weapon("poisoned dagger", "poisons", 0),
-        Weapon("longsword", "enhances crits", 0),
-        Weapon("whip", "bleed", 0)
+        Weapon("hammer", "stuns", 40, 3),
+        Weapon("poisoned dagger", "poisons", 20, 1),
+        Weapon("longsword", "enhances crits", 30, 2),
+        Weapon("whip", "bleed", 15, 1)
     )
 
     val armors: Array<Armor> = arrayOf(
-        Armor("vampire's robes", "life steal", 0),
-        Armor("cloak", "enhances crit chance", 0)
+        Armor("vampire's robes", "life steal", 5, 1),
+        Armor("cloak", "enhances crit chance", 5, 1)
     )
 
     val consumables: Array<Consumable> = arrayOf(
