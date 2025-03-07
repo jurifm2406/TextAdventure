@@ -11,6 +11,9 @@ import kotlin.random.Random
 class Map(size: Point) {
     var map: Array<Array<Room?>> = Array(size.x) { arrayOfNulls(size.y) }
     val startRoom: Room
+    val endRoom: Room
+    val chestRooms = mutableListOf<Room>()
+    val shopRoom: Room?
 
     init {
         // variables for map generation
@@ -83,23 +86,51 @@ class Map(size: Point) {
             roomQueue += nextRoomQueue
             nextRoomQueue = mutableListOf()
         }
+
+        // special rooms
         startRoom = map[map.size / 2][map.size / 2]!!
 
         startRoom.inventory.add(Data.armors[Random.nextInt(Data.armors.size)])
         startRoom.inventory.add(Data.weapons[Random.nextInt(Data.weapons.size)])
 
-
-
         // create room list to place items and entities in
         val roomList = map.flatten().shuffled().filterNotNull().toMutableList()
         roomList.remove(startRoom)
 
+        // special rooms
         val endRooms = mutableListOf<Room>()
 
         roomList.forEach { room ->
             if (neighbours(room.coords).filterNotNull().size == 1) {
                 endRooms.add(room)
             }
+        }
+
+        // room to advance to next floor
+        endRoom = roomList.random()
+        roomList.remove(endRoom)
+
+        if (Random.nextInt(3) == 0) {
+            val room = roomList.randomOrNull()
+            if (room != null) {
+                roomList.remove(room)
+                chestRooms.add(room)
+            }
+        }
+
+        if (Random.nextInt(3) == 0) {
+            val room = roomList.randomOrNull()
+            roomList.remove(room)
+            if (room != null) {
+                roomList.remove(room)
+                chestRooms.add(room)
+            }
+        }
+
+        shopRoom = if (Random.nextInt(3) <= 1) {
+            roomList.randomOrNull()
+        } else {
+            null
         }
 
         // add weapons to random number of rooms
@@ -112,7 +143,7 @@ class Map(size: Point) {
             )
         }
         roomList.shuffle()
-        // add armour to random number of rooms
+        // add armor to random number of rooms
         for (i in 0..<Random.nextInt(4, 6)) {
             map[roomList[i].coords.x][roomList[i].coords.y]!!.inventory.add(
                 Data.armors[Random.nextInt(
@@ -136,7 +167,7 @@ class Map(size: Point) {
                 Data.weapons[Random.nextInt(0, Data.weapons.size)]
             map[roomList[i].coords.x][roomList[i].coords.y]!!.entities[0].room = roomList[i]
         }
-        for (i in 0..<map.size) {
+        for (i in map.indices) {
             for (j in 0..<map[0].size) {
                 if (map[i][j] != null) {
                     for (k in 0..<map[i][j]!!.inventory.size) {
