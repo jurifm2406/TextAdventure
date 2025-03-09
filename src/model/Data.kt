@@ -8,9 +8,9 @@ import model.objects.base.item.Weapon
 object Data {
     val weapons: Array<Weapon> = arrayOf(
         Weapon("hammer", "stuns", 40, 3),
-        Weapon("poisoned dagger", "poisons", 20, 1),
-        Weapon("longsword", "enhances crits", 30, 2),
-        Weapon("whip", "bleed", 15, 1)
+        Weapon("poisoned dagger", "poisons", 10, 1),
+        Weapon("longsword", "enhances crits", 25, 2),
+        Weapon("whip", "bleed", 10, 1)
     )
 
     val armors: Array<Armor> = arrayOf(

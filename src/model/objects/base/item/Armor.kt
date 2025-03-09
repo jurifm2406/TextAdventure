@@ -3,6 +3,11 @@ package model.objects.base.item
 class Armor(
     name: String = "nothing",
     description: String = "bare skin",
-    val absorption: Int = 0,
+    var absorption: Int = 0,
     val actionPoints: Int = 1
-) : Item(name, description)
+) : Item(name, description){
+
+    fun copy(): Armor {
+        return Armor(name, description, absorption, actionPoints)
+    }
+}

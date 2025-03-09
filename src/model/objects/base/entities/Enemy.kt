@@ -14,4 +14,16 @@ class Enemy(
     armor: Armor = Armor(),
     room: Room = Room(Point(-1, -1))
 ) :
-    Entity(name, health, inventory, weapon, armor, room)
+    Entity(name, health, inventory, weapon, armor, room){
+
+    fun copy(): Enemy {
+        return Enemy(
+            name,
+            health,
+            inventory,
+            weapon,
+            armor,
+            room
+        )
+    }
+}
