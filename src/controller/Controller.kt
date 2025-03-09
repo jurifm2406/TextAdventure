@@ -176,18 +176,11 @@ class Controller {
                 }
 
                 3 -> {
-                    for (room in model.map.neighbours(model.hero.room.coords)) {
-                        if (room == null) {
-                            continue
-                        }
-                        // could be random room or previous room
-                        model.hero.room = room
+                    // move to last room
+                    model.hero.room = model.hero.lastRoom
 
-                        updateMap()
-                        combat = null
-
-                        break
-                    }
+                    updateMap()
+                    combat = null
                     return
                 }
             }

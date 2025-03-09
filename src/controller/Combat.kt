@@ -66,15 +66,17 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
             } else if (mode == 1) {
 
                 end = System.currentTimeMillis()
-                score = (needlemanWunsch(puzzle, input) - ((end - start - puzzle.length * 300.0) / 1000.0)) / 10.0
+                score = (needlemanWunsch(puzzle, input) - ((end - start - puzzle.length * 300.0) / 1000.0)) / 40.0
+                println(needlemanWunsch(puzzle, input))
+                if (score < 2) {score = 2.0}
 
-                if (end - start > 2000 + puzzle.length * 750) {
+                if (end - start > 2000 + puzzle.length * 300) {
                     actionPoints -= 3
                     view.content.output.respond("You were too slow, your attack is canceled")
                     mode = 0
                     return 0
                 }
-                val decimal = BigDecimal(score + 1).setScale(2, RoundingMode.HALF_EVEN)
+                val decimal = BigDecimal(score).setScale(2, RoundingMode.HALF_EVEN)
                 view.content.output.respond("Your score is $decimal")
                 mode = 0
 
@@ -83,15 +85,13 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
         if (mode == 0) {
             actionPoints -= hero.weapon.actionPoints
             view.content.output.respond("You now have $actionPoints action points")
-            hero.attack(enemy, (damageMultiplierHero + score))
+            hero.attack(enemy, (score))
 
             damageMultiplierHero = 1.0
             if (enemy.health <= 0) {
                 view.content.output.respond("You killed the ${enemy.name}")
+                // add coins for killing the enemy
 
-                hero.room.entities.remove(enemy)
-
-                // enemy item drops TODO
                 mode = 0
                 return 1
             }
@@ -128,10 +128,12 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
             return 0
         }
         actionPoints = 0
-        if (Random.nextInt(0, 1) == 0) {
+        if (Random.nextInt(0, 2) == 0) {
             view.content.output.respond("You escaped")
             return 3
         }
+        view.content.output.respond("You now have $actionPoints action points")
+
         view.content.output.respond("Your escape failed, the ${enemy.name} now does triple damage")
         damageMultiplierEnemy = 3.0
 
