@@ -21,6 +21,7 @@ abstract class Entity(
     var absorption: Int = 0
 ) {
     var health: Int = maxHealth
+    var lastRoom = room
 
     private fun die() {
         room.inventory.add(weapon)
