@@ -1,5 +1,6 @@
 package controller
 
+import model.Map
 import model.Data
 import model.Model
 import model.objects.base.Inventory
@@ -199,7 +200,7 @@ class Controller {
         when (splitInput[0]) {
             "move" -> {
                 if (splitInput.size < 2) {
-                    view.content.output.respond("usage: move [direction]!")
+                    view.content.output.respond("usage: move [direction]")
                     return
                 }
 
@@ -219,6 +220,14 @@ class Controller {
                         }
                         combat = Combat(model.hero.room.entities.filterIsInstance<Enemy>()[0], model.hero, view)
                         view.content.output.respond("you entered combat")
+                    }
+
+                    if (model.hero.room == model.map.shopRoom) {
+                        view.content.output.respond("you find yourself in a shop")
+                    }
+
+                    if (model.hero.room in model.map.chestRooms) {
+                        view.content.output.respond("the room you enter is empty except for a single chest")
                     }
                 } catch (e: RoomNotThereException) {
                     view.content.output.respond(e.message)
@@ -502,6 +511,20 @@ class Controller {
                     else -> {
                         view.content.output.respond("command ${splitInput[1]} doesn't exist!")
                     }
+                }
+            }
+
+            "climb" -> {
+                if (model.hero.room == model.map.endRoom) {
+                    view.content.output.respond("you climb up to the next floor")
+                    model.floor += 1
+                    model.map = Map(model.mapSize, model.floor)
+                    model.hero.room = model.map.startRoom
+                    clearMap()
+                    updateMap()
+                    updateInfo()
+                } else {
+                    view.content.output.respond("there's no ladder to the next floor in this room!")
                 }
             }
 
