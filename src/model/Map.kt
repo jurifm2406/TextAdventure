@@ -144,13 +144,13 @@ class Map(size: Point, floor: Int) {
             // add armors
             for (i in 0..<Random.nextInt(1, 3)) {
                 item = Data.armors[Random.nextInt(Data.armors.size)].copy()
-                item.absorption = (item.absorption * scale + Random.nextInt(-2, 3)).toInt()
+                item.absorption = ((item.absorption + Random.nextInt(-2, 3)) * scale) .toInt()
                 map[roomList[i].coords.x][roomList[i].coords.y]!!.inventory.add(item)
             }
             // add weapons
             for (i in 0..<Random.nextInt(1, 3)) {
                 item = Data.weapons[Random.nextInt(Data.weapons.size)].copy()
-                item.damage = (item.damage * scale + Random.nextInt(-5, 6)).toInt()
+                item.damage = ((item.damage + Random.nextInt(-5, 6)) * scale).toInt()
                 map[roomList[i].coords.x][roomList[i].coords.y]!!.inventory.add(item)
             }
             // add consumables

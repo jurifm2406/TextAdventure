@@ -1,5 +1,6 @@
 package controller
 
+import model.Data
 import model.Model
 import model.objects.base.Inventory
 import model.objects.base.entities.Enemy
@@ -394,6 +395,107 @@ class Controller {
 
                                 doc.insertString(doc.length, "\n", style)
                             }
+                        }
+                    }
+                    "shop" -> {
+                        if (model.hero.room == model.map.shopRoom) {
+                            when (splitInput[2]) {
+                                "sell" -> {
+                                    if (splitInput.size < 5) {
+                                        // add usage
+                                        return
+                                    }
+                                    val selection = createSelection(splitInput[3], model.hero.room.inventory)
+
+                                    if (selection.isEmpty()) {
+                                        view.content.output.respond("there are no items of type ${splitInput[3]} in your inventory")
+                                    }
+
+                                    try {
+                                        model.hero.inventory.remove(selection[splitInput[4].toInt()])
+                                        model.hero.coins += 15
+                                    } catch (e: IndexOutOfBoundsException) {
+                                        view.content.output.respond("this item id doesn't correspond to an item in your inventory")
+                                    } catch (e: ItemNotThereException) {
+                                        view.content.output.respond(e.message)
+                                    }
+                                }
+
+                                "buy" -> {
+                                    if (splitInput.size < 5) {
+                                        // add usage
+                                        return
+                                    }
+                                    val inv = Inventory(Data.weapons.size + Data.armors.size + Data.consumables.size)
+                                    for (weapon in Data.weapons) {
+                                        var tWeapon = weapon.copy()
+                                        tWeapon.damage = ((weapon.damage + 6) * model.map.scale).toInt()
+                                        inv.add(tWeapon)
+                                    }
+                                    for (armor in Data.armors){
+                                        var tArmor = armor.copy()
+                                        tArmor.absorption = ((armor.absorption + 3) * model.map.scale).toInt()
+                                        inv.add(tArmor)
+                                    }
+                                    for (consumable in Data.consumables){
+                                        inv.add(consumable.copy())
+                                    }
+                                    val selection = createSelection(splitInput[3], inv)
+                                    try {
+                                        if(model.hero.coins <= 150) {
+                                            model.hero.inventory.add(selection[splitInput[4].toInt()])
+                                            model.hero.coins -= 150
+                                        }
+                                        else{
+                                            view.content.output.respond("You don't have enough coins left!")
+                                        }
+                                    } catch (e: IndexOutOfBoundsException) {
+                                        view.content.output.respond("this item id doesn't correspond to an item in the shop")
+                                    } catch (e: ItemNotThereException) {
+                                        view.content.output.respond(e.message)
+                                    }
+                                }
+                                "info" -> {
+                                    val tinv = Inventory(Data.weapons.size + Data.armors.size + Data.consumables.size)
+                                    for (weapon in Data.weapons) {
+                                        tinv.add(weapon)
+                                    }
+                                    for (armor in Data.armors){
+                                        tinv.add(armor)
+                                    }
+                                    for (consumable in Data.consumables){
+                                        tinv.add(consumable)
+                                    }
+
+                                    val style = SimpleAttributeSet()
+                                    StyleConstants.setFontFamily(style, Font.MONOSPACED)
+
+                                    val doc = view.content.output.styledDocument
+
+                                    tinv.export().forEach { block ->
+                                        val maxLengths = Array(4) { 0 }
+                                        block.forEach { row ->
+                                            row.forEachIndexed { i, word ->
+                                                if (word.length + 2 > maxLengths[i]) {
+                                                    maxLengths[i] = word.length + 2
+                                                }
+                                            }
+                                        }
+
+                                        block.forEach { row ->
+                                            row.forEachIndexed { i, word ->
+                                                println(word.padEnd(maxLengths[i]))
+                                                doc.insertString(doc.length, word.padEnd(maxLengths[i]), style)
+                                            }
+
+                                            doc.insertString(doc.length, "\n", style)
+                                        }
+                                    }
+                                }
+                            }
+
+                        } else{
+                            view.content.output.respond("You are not in a shop room")
                         }
                     }
 
