@@ -15,7 +15,9 @@ object Data {
 
     val armors: Array<Armor> = arrayOf(
         Armor("vampire's robes", "life steal", 5, 1),
-        Armor("cloak", "enhances crit chance", 5, 1)
+        Armor("cloak", "enhances crit chance", 5, 1),
+        Armor("paladin's chest plate", "protects from death once", 10, 2),
+        Armor("plate armor", "all enemies deal 30% less damage", 10, 2)
     )
 
     val consumables: Array<Consumable> = arrayOf(
