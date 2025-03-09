@@ -86,6 +86,15 @@ class Controller {
         }
     }
 
+    private fun clearMap() {
+        for (i in 0..<model.mapSize.x) {
+            for (j in 0..<model.mapSize.y) {
+                view.content.sidebar.map.setValueAt(" ", i, j)
+            }
+        }
+        updateMap()
+    }
+
     private fun updateInfo() {
         val infoData: MutableList<Array<String>> = mutableListOf()
 
@@ -211,7 +220,6 @@ class Controller {
                         combat = Combat(model.hero.room.entities.filterIsInstance<Enemy>()[0], model.hero, view)
                         view.content.output.respond("you entered combat")
                     }
-
                 } catch (e: RoomNotThereException) {
                     view.content.output.respond(e.message)
                 }
