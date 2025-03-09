@@ -1,7 +1,7 @@
 package controller
 
-import model.Map
 import model.Data
+import model.Map
 import model.Model
 import model.objects.base.Inventory
 import model.objects.base.entities.Enemy
@@ -234,151 +234,229 @@ class Controller {
                 }
             }
 
-            "inventory" -> {
-                if (splitInput.size < 2) {
-                    view.content.output.respond("usage: inventory [action]")
+            "drop" -> {
+                if (splitInput.size < 3) {
+                    view.content.output.respond("usage: drop [item class] [item id]")
                     return
                 }
 
-                when (splitInput[1]) {
-                    "drop" -> {
-                        if (splitInput.size < 4) {
-                            view.content.output.respond("usage: drop [item class] [item id]")
-                            return
-                        }
+                val selection = createSelection(splitInput[2], model.hero.inventory)
 
-                        val selection = createSelection(splitInput[2], model.hero.inventory)
+                if (selection.isEmpty()) {
+                    view.content.output.respond("there are no items of type ${splitInput[2]} in your inventory")
+                }
 
-                        if (selection.isEmpty()) {
-                            view.content.output.respond("there are no items of type ${splitInput[2]} in your inventory")
-                        }
+                try {
+                    model.hero.drop(selection[splitInput[3].toInt()])
+                    updateInfo()
+                    view.content.output.respond("dropped ${splitInput[2]} ${selection[splitInput[3].toInt()].name}")
+                } catch (e: IndexOutOfBoundsException) {
+                    view.content.output.respond("item id ${splitInput[3]} doesn't correspond to an item in your inventory")
+                } catch (e: ItemNotThereException) {
+                    view.content.output.respond(e.message)
+                }
+            }
 
-                        try {
-                            model.hero.drop(selection[splitInput[3].toInt()])
-                            updateInfo()
-                            view.content.output.respond("dropped ${splitInput[2]} ${selection[splitInput[3].toInt()].name}")
-                        } catch (e: IndexOutOfBoundsException) {
-                            view.content.output.respond("item id ${splitInput[3]} doesn't correspond to an item in your inventory")
-                        } catch (e: ItemNotThereException) {
-                            view.content.output.respond(e.message)
-                        }
+            "equip" -> {
+                if (splitInput.size < 3) {
+                    view.content.output.respond("usage: equip [item class] [item id]")
+                    return
+                }
+
+                if (splitInput[2] == "consumable") {
+                    view.content.output.respond("can't equip a consumable")
+                    return
+                }
+
+                val selection = createSelection(splitInput[2], model.hero.inventory)
+
+                if (selection.isEmpty()) {
+                    view.content.output.respond("there are no items of type ${splitInput[2]} in your inventory")
+                }
+
+                try {
+                    model.hero.equip(selection[splitInput[3].toInt()])
+                    updateInfo()
+                    view.content.output.respond("equipped ${splitInput[2]} ${selection[splitInput[3].toInt()].name}")
+                } catch (e: IndexOutOfBoundsException) {
+                    view.content.output.respond("item id ${splitInput[3]} doesn't correspond to an item in your inventory")
+                } catch (e: ItemNotThereException) {
+                    view.content.output.respond(e.message)
+                }
+            }
+
+            "unequip" -> {
+                if (splitInput.size < 2) {
+                    view.content.output.respond("usage: unequip [item class]")
+                    return
+                }
+
+                if (splitInput[2] == "consumable") {
+                    view.content.output.respond("can't unequip a consumable")
+                    return
+                }
+
+                when (splitInput[2]) {
+                    "armor" -> {
+                        view.content.output.respond("unequipped armor ${model.hero.armor}")
+                        model.hero.unequip(splitInput[2])
+                        updateInfo()
                     }
 
-                    "equip" -> {
-                        if (splitInput.size < 4) {
-                            view.content.output.respond("usage: equip [item class] [item id]")
-                            return
-                        }
-
-                        if (splitInput[2] == "consumable") {
-                            view.content.output.respond("can't equip a consumable")
-                            return
-                        }
-
-                        val selection = createSelection(splitInput[2], model.hero.inventory)
-
-                        if (selection.isEmpty()) {
-                            view.content.output.respond("there are no items of type ${splitInput[2]} in your inventory")
-                        }
-
-                        try {
-                            model.hero.equip(selection[splitInput[3].toInt()])
-                            updateInfo()
-                            view.content.output.respond("equipped ${splitInput[2]} ${selection[splitInput[3].toInt()].name}")
-                        } catch (e: IndexOutOfBoundsException) {
-                            view.content.output.respond("item id ${splitInput[3]} doesn't correspond to an item in your inventory")
-                        } catch (e: ItemNotThereException) {
-                            view.content.output.respond(e.message)
-                        }
-                    }
-
-                    "unequip" -> {
-                        if (splitInput.size < 3) {
-                            view.content.output.respond("usage: unequip [item class]")
-                            return
-                        }
-
-                        if (splitInput[2] == "consumable") {
-                            view.content.output.respond("can't unequip a consumable")
-                            return
-                        }
-
-                        when (splitInput[2]) {
-                            "armor" -> {
-                                view.content.output.respond("unequipped armor ${model.hero.armor}")
-                                model.hero.unequip(splitInput[2])
-                                updateInfo()
-                            }
-
-                            "weapon" -> {
-                                view.content.output.respond("unequipped weapon ${model.hero.weapon}")
-                                model.hero.unequip(splitInput[2])
-                                updateInfo()
-                            }
-
-                            else -> {
-                                view.content.output.respond("can't unequip item of type ${splitInput[2]}")
-                            }
-                        }
-                    }
-
-                    "use" -> {
-                        if (splitInput.size < 3) {
-                            view.content.output.respond("usage: use [consumable id]")
-                        }
-
-                        val selection = model.hero.inventory.filterIsInstance<Consumable>()
-
-                        try {
-                            model.hero.use(selection[splitInput[2].toInt()], model.hero)
-                            updateInfo()
-                            updateMap()
-                        } catch (e: IndexOutOfBoundsException) {
-                            view.content.output.respond("no consumable with that index!")
-                        }
+                    "weapon" -> {
+                        view.content.output.respond("unequipped weapon ${model.hero.weapon}")
+                        model.hero.unequip(splitInput[2])
+                        updateInfo()
                     }
 
                     else -> {
-                        view.content.output.respond("command ${splitInput[1]} doesn't exist!")
-                        return
+                        view.content.output.respond("can't unequip item of type ${splitInput[2]}")
                     }
                 }
             }
 
-            "room" -> {
+            "use" -> {
                 if (splitInput.size < 2) {
-                    view.content.output.respond("usage: room [action]")
+                    view.content.output.respond("usage: use [consumable id]")
+                }
+
+                val selection = model.hero.inventory.filterIsInstance<Consumable>()
+
+                try {
+                    model.hero.use(selection[splitInput[2].toInt()], model.hero)
+                    updateInfo()
+                    updateMap()
+                } catch (e: IndexOutOfBoundsException) {
+                    view.content.output.respond("no consumable with that index!")
+                }
+            }
+
+            "pickup" -> {
+                if (splitInput.size < 3) {
+                    view.content.output.respond("usage: pickup [item class] [item id]")
                     return
                 }
 
-                when (splitInput[1]) {
-                    "pickup" -> {
-                        if (splitInput.size < 4) {
-                            view.content.output.respond("usage: pickup [item class] [item id]")
-                            return
+                val selection = createSelection(splitInput[2], model.hero.room.inventory)
+
+                if (selection.isEmpty()) {
+                    view.content.output.respond("there are no items of type ${splitInput[2]} in the room")
+                }
+
+                try {
+                    model.hero.pickup(selection[splitInput[3].toInt()])
+                    updateInfo()
+                    view.content.output.respond("picked up ${splitInput[2]} ${selection[splitInput[3].toInt()].name}")
+                } catch (e: IndexOutOfBoundsException) {
+                    view.content.output.respond("this item id doesn't correspond to an item in the current room")
+                } catch (e: ItemNotThereException) {
+                    view.content.output.respond(e.message)
+                }
+            }
+
+            "inspect" -> {
+                if (model.hero.room.inventory.export().isEmpty()) {
+                    view.content.output.respond("there are no items in this room!")
+                    return
+                }
+
+                val style = SimpleAttributeSet()
+                StyleConstants.setFontFamily(style, Font.MONOSPACED)
+
+                val doc = view.content.output.styledDocument
+
+                model.hero.room.inventory.export().forEach { block ->
+                    val maxLengths = Array(4) { 0 }
+                    block.forEach { row ->
+                        row.forEachIndexed { i, word ->
+                            if (word.length + 2 > maxLengths[i]) {
+                                maxLengths[i] = word.length + 2
+                            }
+                        }
+                    }
+
+                    block.forEach { row ->
+                        row.forEachIndexed { i, word ->
+                            println(word.padEnd(maxLengths[i]))
+                            doc.insertString(doc.length, word.padEnd(maxLengths[i]), style)
                         }
 
-                        val selection = createSelection(splitInput[2], model.hero.room.inventory)
+                        doc.insertString(doc.length, "\n", style)
+                    }
+                }
+            }
+
+            "shop" -> {
+                if (model.hero.room != model.map.shopRoom) {
+                    view.content.output.respond("You are not in a shop room")
+                    return
+                }
+                when (splitInput[2]) {
+                    "sell" -> {
+                        if (splitInput.size < 4) {
+                            // add usage
+                            return
+                        }
+                        val selection = createSelection(splitInput[3], model.hero.room.inventory)
 
                         if (selection.isEmpty()) {
-                            view.content.output.respond("there are no items of type ${splitInput[2]} in the room")
+                            view.content.output.respond("there are no items of type ${splitInput[3]} in your inventory")
                         }
 
                         try {
-                            model.hero.pickup(selection[splitInput[3].toInt()])
-                            updateInfo()
-                            view.content.output.respond("picked up ${splitInput[2]} ${selection[splitInput[3].toInt()].name}")
+                            model.hero.inventory.remove(selection[splitInput[4].toInt()])
+                            model.hero.coins += 15
                         } catch (e: IndexOutOfBoundsException) {
-                            view.content.output.respond("this item id doesn't correspond to an item in the current room")
+                            view.content.output.respond("this item id doesn't correspond to an item in your inventory")
                         } catch (e: ItemNotThereException) {
                             view.content.output.respond(e.message)
                         }
                     }
 
-                    "inspect" -> {
-                        if (model.hero.room.inventory.export().isEmpty()) {
-                            view.content.output.respond("there are no items in this room!")
+                    "buy" -> {
+                        if (splitInput.size < 4) {
+                            // add usage
                             return
+                        }
+                        val inv = Inventory(Data.weapons.size + Data.armors.size + Data.consumables.size)
+                        for (weapon in Data.weapons) {
+                            val tWeapon = weapon.copy()
+                            tWeapon.damage = ((weapon.damage + 6) * model.map.scale).toInt()
+                            inv.add(tWeapon)
+                        }
+                        for (armor in Data.armors) {
+                            val tArmor = armor.copy()
+                            tArmor.absorption = ((armor.absorption + 3) * model.map.scale).toInt()
+                            inv.add(tArmor)
+                        }
+                        for (consumable in Data.consumables) {
+                            inv.add(consumable.copy())
+                        }
+                        val selection = createSelection(splitInput[3], inv)
+                        try {
+                            if (model.hero.coins <= 150) {
+                                model.hero.inventory.add(selection[splitInput[4].toInt()])
+                                model.hero.coins -= 150
+                            } else {
+                                view.content.output.respond("You don't have enough coins left!")
+                            }
+                        } catch (e: IndexOutOfBoundsException) {
+                            view.content.output.respond("this item id doesn't correspond to an item in the shop")
+                        } catch (e: ItemNotThereException) {
+                            view.content.output.respond(e.message)
+                        }
+                    }
+
+                    "info" -> {
+                        val tInv = Inventory(Data.weapons.size + Data.armors.size + Data.consumables.size)
+                        for (weapon in Data.weapons) {
+                            tInv.add(weapon)
+                        }
+                        for (armor in Data.armors) {
+                            tInv.add(armor)
+                        }
+                        for (consumable in Data.consumables) {
+                            tInv.add(consumable)
                         }
 
                         val style = SimpleAttributeSet()
@@ -386,7 +464,7 @@ class Controller {
 
                         val doc = view.content.output.styledDocument
 
-                        model.hero.room.inventory.export().forEach { block ->
+                        tInv.export().forEach { block ->
                             val maxLengths = Array(4) { 0 }
                             block.forEach { row ->
                                 row.forEachIndexed { i, word ->
@@ -405,111 +483,6 @@ class Controller {
                                 doc.insertString(doc.length, "\n", style)
                             }
                         }
-                    }
-                    "shop" -> {
-                        if (model.hero.room == model.map.shopRoom) {
-                            when (splitInput[2]) {
-                                "sell" -> {
-                                    if (splitInput.size < 5) {
-                                        // add usage
-                                        return
-                                    }
-                                    val selection = createSelection(splitInput[3], model.hero.room.inventory)
-
-                                    if (selection.isEmpty()) {
-                                        view.content.output.respond("there are no items of type ${splitInput[3]} in your inventory")
-                                    }
-
-                                    try {
-                                        model.hero.inventory.remove(selection[splitInput[4].toInt()])
-                                        model.hero.coins += 15
-                                    } catch (e: IndexOutOfBoundsException) {
-                                        view.content.output.respond("this item id doesn't correspond to an item in your inventory")
-                                    } catch (e: ItemNotThereException) {
-                                        view.content.output.respond(e.message)
-                                    }
-                                }
-
-                                "buy" -> {
-                                    if (splitInput.size < 5) {
-                                        // add usage
-                                        return
-                                    }
-                                    val inv = Inventory(Data.weapons.size + Data.armors.size + Data.consumables.size)
-                                    for (weapon in Data.weapons) {
-                                        var tWeapon = weapon.copy()
-                                        tWeapon.damage = ((weapon.damage + 6) * model.map.scale).toInt()
-                                        inv.add(tWeapon)
-                                    }
-                                    for (armor in Data.armors){
-                                        var tArmor = armor.copy()
-                                        tArmor.absorption = ((armor.absorption + 3) * model.map.scale).toInt()
-                                        inv.add(tArmor)
-                                    }
-                                    for (consumable in Data.consumables){
-                                        inv.add(consumable.copy())
-                                    }
-                                    val selection = createSelection(splitInput[3], inv)
-                                    try {
-                                        if(model.hero.coins <= 150) {
-                                            model.hero.inventory.add(selection[splitInput[4].toInt()])
-                                            model.hero.coins -= 150
-                                        }
-                                        else{
-                                            view.content.output.respond("You don't have enough coins left!")
-                                        }
-                                    } catch (e: IndexOutOfBoundsException) {
-                                        view.content.output.respond("this item id doesn't correspond to an item in the shop")
-                                    } catch (e: ItemNotThereException) {
-                                        view.content.output.respond(e.message)
-                                    }
-                                }
-                                "info" -> {
-                                    val tinv = Inventory(Data.weapons.size + Data.armors.size + Data.consumables.size)
-                                    for (weapon in Data.weapons) {
-                                        tinv.add(weapon)
-                                    }
-                                    for (armor in Data.armors){
-                                        tinv.add(armor)
-                                    }
-                                    for (consumable in Data.consumables){
-                                        tinv.add(consumable)
-                                    }
-
-                                    val style = SimpleAttributeSet()
-                                    StyleConstants.setFontFamily(style, Font.MONOSPACED)
-
-                                    val doc = view.content.output.styledDocument
-
-                                    tinv.export().forEach { block ->
-                                        val maxLengths = Array(4) { 0 }
-                                        block.forEach { row ->
-                                            row.forEachIndexed { i, word ->
-                                                if (word.length + 2 > maxLengths[i]) {
-                                                    maxLengths[i] = word.length + 2
-                                                }
-                                            }
-                                        }
-
-                                        block.forEach { row ->
-                                            row.forEachIndexed { i, word ->
-                                                println(word.padEnd(maxLengths[i]))
-                                                doc.insertString(doc.length, word.padEnd(maxLengths[i]), style)
-                                            }
-
-                                            doc.insertString(doc.length, "\n", style)
-                                        }
-                                    }
-                                }
-                            }
-
-                        } else{
-                            view.content.output.respond("You are not in a shop room")
-                        }
-                    }
-
-                    else -> {
-                        view.content.output.respond("command ${splitInput[1]} doesn't exist!")
                     }
                 }
             }
