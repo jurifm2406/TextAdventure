@@ -166,11 +166,16 @@ class Controller {
                 0 -> return
                 1 -> {
                     combat = null
+                    updateInfo()
+                    updateMap()
                     return
                 }
 
                 2 -> {
                     heroDeath()
+                    updateInfo()
+                    updateMap()
+
                     combat = null
                     return
                 }
@@ -179,6 +184,7 @@ class Controller {
                     // move to last room
                     model.hero.room = model.hero.lastRoom
 
+                    updateInfo()
                     updateMap()
                     combat = null
                     return
@@ -483,6 +489,5 @@ class Controller {
         view.content.sidebar.map.setValueAt("x", model.hero.room.coords.x, model.hero.room.coords.y)
         model.hero.room = model.map.startRoom
         model.hero.health = 300
-        updateMap()
     }
 }

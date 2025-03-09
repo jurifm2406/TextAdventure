@@ -2,6 +2,7 @@ package controller
 
 import model.objects.base.entities.Entity
 import model.objects.base.entities.Hero
+import model.objects.base.item.Consumable
 import view.View
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -24,7 +25,7 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
             when (input[0].lowercase()) {
                 "attack" -> return (attack(input[0]))
                 "defend" -> return (defend())
-                "use" -> return (useItem())
+                "use" -> return (useItem(input[1]))
                 "escape" -> return (escape())
                 "end" -> {
                     actionPoints += 3
@@ -70,8 +71,8 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
                 println(needlemanWunsch(puzzle, input))
                 if (score < 2) {score = 2.0}
 
-                if (end - start > 2000 + puzzle.length * 300) {
-                    actionPoints -= 3
+                if (end - start > 2000 + puzzle.length * 500) {
+                    actionPoints -= hero.weapon.actionPoints
                     view.content.output.respond("You were too slow, your attack is canceled")
                     mode = 0
                     return 0
@@ -91,6 +92,9 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
             if (enemy.health <= 0) {
                 view.content.output.respond("You killed the ${enemy.name}")
                 // add coins for killing the enemy
+                val reward = 10 + Random.nextInt(-2, 2)
+                hero.coins += reward
+                view.content.output.respond("You recieved $reward coins")
 
                 mode = 0
                 return 1
@@ -116,10 +120,33 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
         return 0
     }
 
-    private fun useItem(): Int {
-        // optional
+    private fun useItem(input: String): Int {
+        val selection = hero.inventory.filterIsInstance<Consumable>()
 
-        return 0
+        try {
+            if (selection[input.toInt()].description.split(" ")[0] == "heals") {
+                hero.use(selection[input.toInt()], hero)
+                view.content.output.respond("You healed yourself, your health is now ${hero.health}")
+            } else {
+                hero.use(selection[input.toInt()], enemy)
+                view.content.output.respond("You damaged the enemy, the ${enemy.name}'s health is now ${enemy.health}")
+
+                if (enemy.health <= 0) {
+                    view.content.output.respond("You killed the ${enemy.name}")
+                    // add coins for killing the enemy
+                    val reward = 10 + Random.nextInt(-2, 2)
+                    hero.coins += reward
+                    view.content.output.respond("You recieved $reward coins")
+
+                    mode = 0
+                    return 1
+                }
+            }
+        }
+            catch(e: IndexOutOfBoundsException) {
+                view.content.output.respond("no consumable with that index!")
+            }
+            return 0
     }
 
     private fun escape(): Int {
