@@ -24,9 +24,6 @@ abstract class Entity(
     var lastRoom = room
 
     private fun die() {
-        room.inventory.add(weapon)
-        room.inventory.add(armor)
-
         this.inventory.forEach { room.inventory.add(it) }
 
         room = Room(Point(-1, -1))
@@ -66,6 +63,12 @@ abstract class Entity(
     fun pickup(item: Item) {
         room.inventory.remove(item)
         inventory.add(item)
+        if (weapon.name == "fists" && item is Weapon) {
+            equip(item)
+        }
+        if (armor.name == "nothing" && item is Armor) {
+            equip(item)
+        }
     }
 
     fun drop(item: Item) {

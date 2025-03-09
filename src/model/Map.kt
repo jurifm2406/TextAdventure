@@ -144,7 +144,7 @@ class Map(size: Point, floor: Int) {
             // add armors
             for (i in 0..<Random.nextInt(1, 3)) {
                 item = Data.armors[Random.nextInt(Data.armors.size)].copy()
-                item.absorption = ((item.absorption + Random.nextInt(-2, 3)) * scale) .toInt()
+                item.absorption = ((item.absorption + Random.nextInt(-2, 3)) * scale).toInt()
                 map[roomList[i].coords.x][roomList[i].coords.y]!!.inventory.add(item)
             }
             // add weapons
@@ -164,7 +164,7 @@ class Map(size: Point, floor: Int) {
             // generate enemy
             val enemy = Data.enemies[Random.nextInt(0, Data.enemies.size)].copy()
             val weapon = Weapon()
-            weapon.damage = ((-0.3 * enemy.health + 124) * scale).toInt()
+            weapon.damage = ((-0.1 * enemy.health + 24) * scale).toInt()
             enemy.weapon = weapon
             enemy.health = (enemy.health * scale).toInt()
             enemy.room = roomList[i]

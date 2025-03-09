@@ -50,7 +50,7 @@ class Controller {
     init {
         view.menuBar.exit.addActionListener { exitProcess(0) }
         view.content.input.addActionListener {
-            view.content.output.respond(view.content.input.text, false)
+            respond(view.content.input.text, false)
             history.add(0, view.content.input.text)
             parseInput(view.content.input.text)
             view.content.input.text = ""
@@ -75,6 +75,15 @@ class Controller {
         })
         updateMap()
         updateInfo()
+    }
+
+    private fun respond(message: String?, bold: Boolean = true) {
+        view.content.output.respond(message, bold)
+        scrollToBottom()
+    }
+
+    private fun scrollToBottom() {
+        view.content.scroll.verticalScrollBar.value = view.content.scroll.verticalScrollBar.maximum
     }
 
     private fun updateMap() {
@@ -159,13 +168,17 @@ class Controller {
         val splitInput = input.split(" ")
 
         if (splitInput.isEmpty()) {
-            view.content.output.respond("no command specified!")
+            respond("no command specified!")
             return
         }
         if (combat != null) {
-
             when (combat!!.combatParse(splitInput)) {
-                0 -> return
+                0 -> {
+                    updateInfo()
+                    updateMap()
+                    return
+                }
+
                 1 -> {
                     combat = null
                     updateInfo()
@@ -200,163 +213,164 @@ class Controller {
         when (splitInput[0]) {
             "move" -> {
                 if (splitInput.size < 2) {
-                    view.content.output.respond("usage: move [direction]")
+                    respond("usage: move [direction]")
                     return
                 }
 
                 if (splitInput[1] !in movement.keys) {
-                    view.content.output.respond("this direction doesn't exist!")
+                    respond("this direction doesn't exist!")
                     return
                 }
 
                 try {
                     model.map.move(movement[splitInput[1]] as Int, model.hero)
                     updateMap()
-                    view.content.output.respond("moved to the ${splitInput[1]}")
+                    respond("moved to the ${splitInput[1]}")
 
                     if (model.hero.room.entities.filterIsInstance<Enemy>().isNotEmpty()) {
                         for (i in 0..<model.hero.room.entities.size) {
-                            view.content.output.respond(model.hero.room.entities[i].name)
+                            respond(model.hero.room.entities[i].name)
                         }
                         combat = Combat(model.hero.room.entities.filterIsInstance<Enemy>()[0], model.hero, view)
-                        view.content.output.respond("you entered combat")
+                        respond("you entered combat with a ${model.hero.room.entities[0].name}")
+                        respond("it intends to attack for ${model.hero.room.entities[0].weapon.damage} damage")
                     }
 
                     if (model.hero.room == model.map.shopRoom) {
-                        view.content.output.respond("you find yourself in a shop")
+                        respond("you find yourself in a shop")
                     }
 
                     if (model.hero.room in model.map.chestRooms) {
-                        view.content.output.respond("the room you enter is empty except for a single chest")
+                        respond("the room you enter is empty except for a single chest")
                     }
                 } catch (e: RoomNotThereException) {
-                    view.content.output.respond(e.message)
+                    respond(e.message)
                 }
             }
 
             "drop" -> {
                 if (splitInput.size < 3) {
-                    view.content.output.respond("usage: drop [item class] [item id]")
+                    respond("usage: drop [item class] [item id]")
                     return
                 }
 
-                val selection = createSelection(splitInput[2], model.hero.inventory)
+                val selection = createSelection(splitInput[1], model.hero.inventory)
 
                 if (selection.isEmpty()) {
-                    view.content.output.respond("there are no items of type ${splitInput[2]} in your inventory")
+                    respond("there are no items of type ${splitInput[1]} in your inventory")
                 }
 
                 try {
-                    model.hero.drop(selection[splitInput[3].toInt()])
+                    model.hero.drop(selection[splitInput[2].toInt()])
                     updateInfo()
-                    view.content.output.respond("dropped ${splitInput[2]} ${selection[splitInput[3].toInt()].name}")
+                    respond("dropped ${splitInput[1]} ${selection[splitInput[2].toInt()].name}")
                 } catch (e: IndexOutOfBoundsException) {
-                    view.content.output.respond("item id ${splitInput[3]} doesn't correspond to an item in your inventory")
+                    respond("item id ${splitInput[2]} doesn't correspond to an item in your inventory")
                 } catch (e: ItemNotThereException) {
-                    view.content.output.respond(e.message)
+                    respond(e.message)
                 }
             }
 
             "equip" -> {
                 if (splitInput.size < 3) {
-                    view.content.output.respond("usage: equip [item class] [item id]")
+                    respond("usage: equip [item class] [item id]")
                     return
                 }
 
-                if (splitInput[2] == "consumable") {
-                    view.content.output.respond("can't equip a consumable")
+                if (splitInput[1] == "consumable") {
+                    respond("can't equip a consumable")
                     return
                 }
 
-                val selection = createSelection(splitInput[2], model.hero.inventory)
+                val selection = createSelection(splitInput[1], model.hero.inventory)
 
                 if (selection.isEmpty()) {
-                    view.content.output.respond("there are no items of type ${splitInput[2]} in your inventory")
+                    respond("there are no items of type ${splitInput[1]} in your inventory")
                 }
 
                 try {
-                    model.hero.equip(selection[splitInput[3].toInt()])
+                    model.hero.equip(selection[splitInput[2].toInt()])
                     updateInfo()
-                    view.content.output.respond("equipped ${splitInput[2]} ${selection[splitInput[3].toInt()].name}")
+                    respond("equipped ${splitInput[1]} ${selection[splitInput[2].toInt()].name}")
                 } catch (e: IndexOutOfBoundsException) {
-                    view.content.output.respond("item id ${splitInput[3]} doesn't correspond to an item in your inventory")
+                    respond("item id ${splitInput[2]} doesn't correspond to an item in your inventory")
                 } catch (e: ItemNotThereException) {
-                    view.content.output.respond(e.message)
+                    respond(e.message)
                 }
             }
 
             "unequip" -> {
                 if (splitInput.size < 2) {
-                    view.content.output.respond("usage: unequip [item class]")
+                    respond("usage: unequip [item class]")
                     return
                 }
 
-                if (splitInput[2] == "consumable") {
-                    view.content.output.respond("can't unequip a consumable")
+                if (splitInput[1] == "consumable") {
+                    respond("can't unequip a consumable")
                     return
                 }
 
-                when (splitInput[2]) {
+                when (splitInput[1]) {
                     "armor" -> {
-                        view.content.output.respond("unequipped armor ${model.hero.armor}")
-                        model.hero.unequip(splitInput[2])
+                        respond("unequipped armor ${model.hero.armor}")
+                        model.hero.unequip(splitInput[1])
                         updateInfo()
                     }
 
                     "weapon" -> {
-                        view.content.output.respond("unequipped weapon ${model.hero.weapon}")
-                        model.hero.unequip(splitInput[2])
+                        respond("unequipped weapon ${model.hero.weapon}")
+                        model.hero.unequip(splitInput[1])
                         updateInfo()
                     }
 
                     else -> {
-                        view.content.output.respond("can't unequip item of type ${splitInput[2]}")
+                        respond("can't unequip item of type ${splitInput[1]}")
                     }
                 }
             }
 
             "use" -> {
                 if (splitInput.size < 2) {
-                    view.content.output.respond("usage: use [consumable id]")
+                    respond("usage: use [consumable id]")
                 }
 
                 val selection = model.hero.inventory.filterIsInstance<Consumable>()
 
                 try {
-                    model.hero.use(selection[splitInput[2].toInt()], model.hero)
+                    model.hero.use(selection[splitInput[1].toInt()], model.hero)
                     updateInfo()
                     updateMap()
                 } catch (e: IndexOutOfBoundsException) {
-                    view.content.output.respond("no consumable with that index!")
+                    respond("no consumable with that index!")
                 }
             }
 
             "pickup" -> {
                 if (splitInput.size < 3) {
-                    view.content.output.respond("usage: pickup [item class] [item id]")
+                    respond("usage: pickup [item class] [item id]")
                     return
                 }
 
-                val selection = createSelection(splitInput[2], model.hero.room.inventory)
+                val selection = createSelection(splitInput[1], model.hero.room.inventory)
 
                 if (selection.isEmpty()) {
-                    view.content.output.respond("there are no items of type ${splitInput[2]} in the room")
+                    respond("there are no items of type ${splitInput[1]} in the room")
                 }
 
                 try {
-                    model.hero.pickup(selection[splitInput[3].toInt()])
+                    model.hero.pickup(selection[splitInput[2].toInt()])
                     updateInfo()
-                    view.content.output.respond("picked up ${splitInput[2]} ${selection[splitInput[3].toInt()].name}")
+                    respond("picked up ${splitInput[1]} ${selection[splitInput[2].toInt()].name}")
                 } catch (e: IndexOutOfBoundsException) {
-                    view.content.output.respond("this item id doesn't correspond to an item in the current room")
+                    respond("this item id doesn't correspond to an item in the current room")
                 } catch (e: ItemNotThereException) {
-                    view.content.output.respond(e.message)
+                    respond(e.message)
                 }
             }
 
             "inspect" -> {
                 if (model.hero.room.inventory.export().isEmpty()) {
-                    view.content.output.respond("there are no items in this room!")
+                    respond("there are no items in this room!")
                     return
                 }
 
@@ -388,28 +402,28 @@ class Controller {
 
             "shop" -> {
                 if (model.hero.room != model.map.shopRoom) {
-                    view.content.output.respond("You are not in a shop room")
+                    respond("You are not in a shop room")
                     return
                 }
-                when (splitInput[2]) {
+                when (splitInput[1]) {
                     "sell" -> {
                         if (splitInput.size < 4) {
                             // add usage
                             return
                         }
-                        val selection = createSelection(splitInput[3], model.hero.room.inventory)
+                        val selection = createSelection(splitInput[2], model.hero.room.inventory)
 
                         if (selection.isEmpty()) {
-                            view.content.output.respond("there are no items of type ${splitInput[3]} in your inventory")
+                            respond("there are no items of type ${splitInput[2]} in your inventory")
                         }
 
                         try {
-                            model.hero.inventory.remove(selection[splitInput[4].toInt()])
+                            model.hero.inventory.remove(selection[splitInput[3].toInt()])
                             model.hero.coins += 15
                         } catch (e: IndexOutOfBoundsException) {
-                            view.content.output.respond("this item id doesn't correspond to an item in your inventory")
+                            respond("this item id doesn't correspond to an item in your inventory")
                         } catch (e: ItemNotThereException) {
-                            view.content.output.respond(e.message)
+                            respond(e.message)
                         }
                     }
 
@@ -432,18 +446,18 @@ class Controller {
                         for (consumable in Data.consumables) {
                             inv.add(consumable.copy())
                         }
-                        val selection = createSelection(splitInput[3], inv)
+                        val selection = createSelection(splitInput[2], inv)
                         try {
                             if (model.hero.coins <= 150) {
-                                model.hero.inventory.add(selection[splitInput[4].toInt()])
+                                model.hero.inventory.add(selection[splitInput[3].toInt()])
                                 model.hero.coins -= 150
                             } else {
-                                view.content.output.respond("You don't have enough coins left!")
+                                respond("You don't have enough coins left!")
                             }
                         } catch (e: IndexOutOfBoundsException) {
-                            view.content.output.respond("this item id doesn't correspond to an item in the shop")
+                            respond("this item id doesn't correspond to an item in the shop")
                         } catch (e: ItemNotThereException) {
-                            view.content.output.respond(e.message)
+                            respond(e.message)
                         }
                     }
 
@@ -489,7 +503,7 @@ class Controller {
 
             "climb" -> {
                 if (model.hero.room == model.map.endRoom) {
-                    view.content.output.respond("you climb up to the next floor")
+                    respond("you climb up to the next floor")
                     model.floor += 1
                     model.map = Map(model.mapSize, model.floor)
                     model.hero.room = model.map.startRoom
@@ -497,57 +511,104 @@ class Controller {
                     updateMap()
                     updateInfo()
                 } else {
-                    view.content.output.respond("there's no ladder to the next floor in this room!")
+                    respond("there's no ladder to the next floor in this room!")
                 }
             }
 
             "help" -> {
                 if (splitInput.size < 2) {
-                    view.content.output.respond("prints information about available commands")
-                    view.content.output.respond("usage: help [command]")
-                    view.content.output.respond("commands:")
-                    view.content.output.respond("- move")
-                    view.content.output.respond("- inventory")
-                    view.content.output.respond("- room")
+                    respond("prints information about available commands")
+                    respond("usage: help [command]")
+                    respond("commands:")
+                    respond("- move")
+                    respond("- pickup")
+                    respond("- drop")
+                    respond("- equip")
+                    respond("- unequip")
+                    respond("- use")
+                    respond("- inspect")
+                    respond("shop specific")
+                    respond("- sell")
+                    respond("- buy")
+                    respond("- info")
+                    respond("end room specific")
+                    respond("- climb")
                     return
                 }
 
                 when (splitInput[1]) {
                     "move" -> {
-                        view.content.output.respond("used to move between rooms")
-                        view.content.output.respond("usage: move [direction]")
-                        view.content.output.respond("directions:")
-                        view.content.output.respond("- north")
-                        view.content.output.respond("- east")
-                        view.content.output.respond("- south")
-                        view.content.output.respond("- west")
+                        respond("used to move between rooms")
+                        respond("usage: move [direction]")
+                        respond("directions:")
+                        respond("- north")
+                        respond("- east")
+                        respond("- south")
+                        respond("- west")
                     }
 
-                    "inventory" -> {
-                        view.content.output.respond("used to interact with your inventory")
-                        view.content.output.respond("usage: inventory [action]")
-                        view.content.output.respond("actions:")
-                        view.content.output.respond("- drop [item class] [item id]: drop item into room")
-                        view.content.output.respond("- equip [item class] [item id]: equip item")
-                        view.content.output.respond("- unequip [item class]: unequip equipped item")
-                        view.content.output.respond("- use [consumable id]: use specified consumable")
+                    "pickup" -> {
+                        respond("pickup an item from the room to your inventory")
+                        respond("- usage: pickup [item class] [item id]")
                     }
 
-                    "room" -> {
-                        view.content.output.respond("used to interact with the current room")
-                        view.content.output.respond("usage: room [action]")
-                        view.content.output.respond("- pickup [item class] [item id]: pickup item from room")
-                        view.content.output.respond("- inspect: list items in room")
+                    "drop" -> {
+                        respond("drop an item from your inventory to the room")
+                        respond("usage: drop [item class] [item id]")
+                    }
+
+                    "equip" -> {
+                        respond("equip an item from your inventory")
+                        respond("usage: equip [item class] [item id]")
+                    }
+
+                    "unequip" -> {
+                        respond("unequip your equipped armor/weapon")
+                        respond("usage: unequip [item class]")
+                    }
+
+                    "use" -> {
+                        respond("use a consumable in your inventory")
+                        respond("usage: use [consumable id]")
+                        respond("warning: using a throwing knife on yourself *will* hurt you")
+                    }
+
+                    "inspect" -> {
+                        respond("inspect the room you're in")
+                        respond("usage: inspect")
+                    }
+
+                    "sell" -> {
+                        respond("only usable in shops")
+                        respond("sell an item from your inventory for gold")
+                        respond("usage: shop sell [item class] [item id]")
+                    }
+
+                    "buy" -> {
+                        respond("only usable in shops")
+                        respond("trade gold against an item in a shop")
+                        respond("usage: shop buy [item class] [item id]")
+                    }
+
+                    "info" -> {
+                        respond("only usable in shops")
+                        respond("get info about shop items")
+                        respond("usage: shop info")
+                    }
+
+                    "climb" -> {
+                        respond("only usable in end rooms")
+                        respond("used to advance to the next floor of the tower")
                     }
 
                     else -> {
-                        view.content.output.respond("unrecognized command ${splitInput[1]}")
+                        respond("unrecognized command ${splitInput[1]}")
                     }
                 }
             }
 
             else -> {
-                view.content.output.respond("command ${splitInput[0]} doesn't exist!")
+                respond("command ${splitInput[0]} doesn't exist!")
                 return
             }
         }
@@ -578,12 +639,12 @@ class Controller {
     }
 
     private fun heroDeath() {
-        view.content.output.respond("You died!")
+        respond("You died!")
         for (item in model.hero.inventory) {
             model.hero.room.inventory.add(item)
         }
         model.hero.inventory.clear()
-        view.content.output.respond("You respawned")
+        respond("You respawned")
         view.content.sidebar.map.setValueAt("x", model.hero.room.coords.x, model.hero.room.coords.y)
         model.hero.room = model.map.startRoom
         model.hero.health = 300

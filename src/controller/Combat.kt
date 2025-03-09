@@ -17,8 +17,8 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
     private var start: Long = 0
     private var end: Long = 0
     private var puzzle = ""
-    private var score = 0.0
-    private var actionPoints = 3
+    private var score = 1.0
+    private var actionPoints = 5
 
     fun combatParse(input: List<String>): Int {
         if (mode == 0) {
@@ -28,7 +28,7 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
                 "use" -> return (useItem(input[1]))
                 "escape" -> return (escape())
                 "end" -> {
-                    actionPoints += 3
+                    actionPoints = 5
                     enemy.tick()
                     hero.tick()
                     return enemyTurn()
@@ -44,7 +44,7 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
 
     private fun attack(input: String): Int {
         if (actionPoints < hero.weapon.actionPoints) {
-            view.content.output.respond("You don't have enough actionpoints to use that weapon")
+            view.content.output.respond("You don't have enough action points to use that weapon")
             return 0
         }
         if ((Random.nextInt(0, 10) < 4) || (mode == 1)) {
@@ -63,26 +63,27 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
                 mode = 1
 
                 return 0
-
             } else if (mode == 1) {
-
                 end = System.currentTimeMillis()
                 score = (needlemanWunsch(puzzle, input) - ((end - start - puzzle.length * 300.0) / 1000.0)) / 40.0
-                println(needlemanWunsch(puzzle, input))
-                if (score < 2) {score = 2.0}
+                //if (score < 2) {
+                //    score = 2.0
+                //}
 
                 if (end - start > 2000 + puzzle.length * 500) {
                     actionPoints -= hero.weapon.actionPoints
                     view.content.output.respond("You were too slow, your attack is canceled")
                     mode = 0
+                    score = 1.0
                     return 0
                 }
                 val decimal = BigDecimal(score).setScale(2, RoundingMode.HALF_EVEN)
                 view.content.output.respond("Your score is $decimal")
+                score = 1.0
                 mode = 0
-
             }
         }
+
         if (mode == 0) {
             actionPoints -= hero.weapon.actionPoints
             view.content.output.respond("You now have $actionPoints action points")
@@ -142,11 +143,10 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
                     return 1
                 }
             }
+        } catch (e: IndexOutOfBoundsException) {
+            view.content.output.respond("no consumable with that index!")
         }
-            catch(e: IndexOutOfBoundsException) {
-                view.content.output.respond("no consumable with that index!")
-            }
-            return 0
+        return 0
     }
 
     private fun escape(): Int {
@@ -169,16 +169,15 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
     }
 
     private fun enemyTurn(): Int {
-
-        if (enemy.stunned == true) {
-            view.content.output.respond("The ${enemy.name} is stunned")
+        if (enemy.stunned) {
+            view.content.output.respond("the ${enemy.name} is stunned, it can't attack")
             return 0
         }
         enemy.attack(hero, damageMultiplierEnemy)
 
         damageMultiplierEnemy = 1.0
 
-        // Check if hero is dead
+        // check if hero is dead
         if (hero.health <= 0) {
             return 2
         } else {
