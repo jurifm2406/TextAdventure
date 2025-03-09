@@ -93,7 +93,7 @@ class Map(size: Point, floor: Int) {
         // special rooms
         startRoom = map[map.size / 2][map.size / 2]!!
 
-        if(floor == 0) {
+        if (floor == 0) {
             startRoom.inventory.add(Data.armors[Random.nextInt(Data.armors.size)])
             startRoom.inventory.add(Data.weapons[Random.nextInt(Data.weapons.size)])
             startRoom.inventory.add(Data.consumables[Random.nextInt(Data.consumables.size)])
@@ -139,7 +139,7 @@ class Map(size: Point, floor: Int) {
             null
         }
         // add items to chest rooms
-        chestRooms.forEach{
+        chestRooms.forEach {
             var item: Item
             // add armors
             for (i in 0..<Random.nextInt(1, 3)) {
@@ -162,7 +162,7 @@ class Map(size: Point, floor: Int) {
         // add enemies to random number of rooms
         for (i in 0..<Random.nextInt(4, 6)) {
             // generate enemy
-            val enemy =  Data.enemies[Random.nextInt(0, Data.enemies.size)].copy()
+            val enemy = Data.enemies[Random.nextInt(0, Data.enemies.size)].copy()
             val weapon = Weapon()
             weapon.damage = ((-0.3 * enemy.health + 124) * scale).toInt()
             enemy.weapon = weapon
@@ -176,19 +176,7 @@ class Map(size: Point, floor: Int) {
     fun move(direction: Int, entity: Entity) {
         val neighbours = neighbours(entity.room.coords)
 
-        if (direction == Directions.NORTH && neighbours[Directions.NORTH] != null) {
-            neighbours[Directions.NORTH]!!.entities.add(entity)
-            entity.room = neighbours[Directions.NORTH]!!
-        } else if (direction == Directions.EAST && neighbours[Directions.EAST] != null) {
-            neighbours[Directions.EAST]!!.entities.add(entity)
-            entity.room = neighbours[Directions.EAST]!!
-        } else if (direction == Directions.SOUTH && neighbours[Directions.SOUTH] != null) {
-            neighbours[Directions.SOUTH]!!.entities.add(entity)
-            entity.room = neighbours[Directions.SOUTH]!!
-        } else if (direction == Directions.WEST && neighbours[Directions.WEST] != null) {
-            neighbours[Directions.WEST]!!.entities.add(entity)
-            entity.room = neighbours[Directions.WEST]!!
-        } else {
+        if (neighbours[direction] == null) {
             var dir = ""
 
             when (direction) {
@@ -201,6 +189,9 @@ class Map(size: Point, floor: Int) {
             throw RoomNotThereException(dir)
         }
 
+        entity.lastRoom = entity.room
+        neighbours[direction]!!.entities.add(entity)
+        entity.room = neighbours[direction]!!
         entity.room.entities.remove(entity)
     }
 
