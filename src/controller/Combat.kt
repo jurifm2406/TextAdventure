@@ -34,7 +34,7 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
                     return enemyTurn()
                 }
 
-                else -> view.content.output.respond("Invalid action.")
+                else -> respond("Invalid action.")
             }
         } else if (mode == 1) {
             return attack(input[0])
@@ -44,20 +44,21 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
 
     private fun attack(input: String): Int {
         if (actionPoints < hero.weapon.actionPoints) {
-            view.content.output.respond("You don't have enough action points to use that weapon")
+            respond("You don't have enough action points to use that weapon")
             return 0
         }
-        if ((Random.nextInt(0, 10) < 4) || (mode == 1)) {
+        if ((Random.nextInt(0, 10) < 3) || (mode == 1)) {
             if (mode == 0) {
-                view.content.output.respond("You have the chance for critical damage")
+                respond("You have the chance for critical damage")
                 // generate puzzle
                 val source = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz"
                 puzzle = java.util.Random().ints(Random.nextInt(5, 10).toLong(), 0, source.length)
                     .asSequence()
                     .map(source::get)
                     .joinToString("")
-                view.content.output.respond("Type this Sequence, as fast as possible")
-                view.content.output.respond(puzzle)
+                respond("Type this Sequence, as fast as possible")
+                respond(puzzle)
+                respond("")
                 start = System.currentTimeMillis()
                 // call view for
                 mode = 1
@@ -69,42 +70,42 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
                 if (score > 2.0) {
                     score = 2.0
                 }
-                if (score < 0.8){
+                if (score < 0.8) {
                     score = 0.8
                 }
 
-                if (end - start > 2000 + puzzle.length * 500) {
+                if (end - start > 4000 + puzzle.length * 500) {
                     actionPoints -= hero.weapon.actionPoints
-                    view.content.output.respond("You were too slow, your attack is canceled")
+                    respond("You were too slow, your attack deals less damage")
                     mode = 0
-                    score = 1.0
+                    score = 0.8
                     return 0
                 }
                 val decimal = BigDecimal(score).setScale(2, RoundingMode.HALF_EVEN)
-                view.content.output.respond("Your score is $decimal")
+                respond("Your score is $decimal")
                 mode = 0
             }
         }
 
         if (mode == 0) {
             actionPoints -= hero.weapon.actionPoints
-            view.content.output.respond("You now have $actionPoints action points")
+            respond("You now have $actionPoints action points")
             hero.attack(enemy, (score))
             score = 1.0
 
             damageMultiplierHero = 1.0
             if (enemy.health <= 0) {
-                view.content.output.respond("You killed the ${enemy.name}")
+                respond("You killed the ${enemy.name}")
                 // add coins for killing the enemy
                 val reward = 10 + Random.nextInt(-2, 2)
                 hero.coins += reward
-                view.content.output.respond("You recieved $reward coins")
+                respond("You recieved $reward coins")
                 hero.room.entities.remove(enemy)
 
                 mode = 0
                 return 1
             }
-            view.content.output.respond("You attacked ${enemy.name}, its health is now ${enemy.health}")
+            respond("You attacked ${enemy.name}, its health is now ${enemy.health}")
             mode = 0
             return 0
         }
@@ -114,14 +115,14 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
     private fun defend(): Int {
 
         if (actionPoints < hero.armor.actionPoints) {
-            view.content.output.respond("You don't have enough action points to defend")
+            respond("You don't have enough action points to defend")
             return 0
         }
         hero.defend()
         actionPoints -= hero.armor.actionPoints
 
-        view.content.output.respond("You now have $actionPoints action points")
-        view.content.output.respond("You take a defensive position the ${enemy.name} now does ${hero.armor.absorption} less damgae")
+        respond("You now have $actionPoints action points")
+        respond("You take a defensive position the ${enemy.name} now does ${hero.armor.absorption} less damgae")
         return 0
     }
 
@@ -131,41 +132,41 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
         try {
             if (selection[input.toInt()].description.split(" ")[0] == "heals") {
                 hero.use(selection[input.toInt()], hero)
-                view.content.output.respond("You healed yourself, your health is now ${hero.health}")
+                respond("You healed yourself, your health is now ${hero.health}")
             } else {
                 hero.use(selection[input.toInt()], enemy)
-                view.content.output.respond("You damaged the enemy, the ${enemy.name}'s health is now ${enemy.health}")
+                respond("You damaged the enemy, the ${enemy.name}'s health is now ${enemy.health}")
 
                 if (enemy.health <= 0) {
-                    view.content.output.respond("You killed the ${enemy.name}")
+                    respond("You killed the ${enemy.name}")
                     // add coins for killing the enemy
                     val reward = 10 + Random.nextInt(-2, 2)
                     hero.coins += reward
-                    view.content.output.respond("You recieved $reward coins")
+                    respond("You recieved $reward coins")
 
                     mode = 0
                     return 1
                 }
             }
         } catch (e: IndexOutOfBoundsException) {
-            view.content.output.respond("no consumable with that index!")
+            respond("no consumable with that index!")
         }
         return 0
     }
 
     private fun escape(): Int {
         if (actionPoints < 3) {
-            view.content.output.respond("You don't have enough action points to escape")
+            respond("You don't have enough action points to escape")
             return 0
         }
         actionPoints = 0
         if (Random.nextInt(0, 2) == 0) {
-            view.content.output.respond("You escaped")
+            respond("You escaped")
             return 3
         }
-        view.content.output.respond("You now have $actionPoints action points")
+        respond("You now have $actionPoints action points")
 
-        view.content.output.respond("Your escape failed, the ${enemy.name} now does triple damage")
+        respond("Your escape failed, the ${enemy.name} now does triple damage")
         damageMultiplierEnemy = 3.0
 
         return 0
@@ -174,7 +175,7 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
 
     private fun enemyTurn(): Int {
         if (enemy.stunned) {
-            view.content.output.respond("the ${enemy.name} is stunned, it can't attack")
+            respond("the ${enemy.name} is stunned, it can't attack")
             return 0
         }
         enemy.attack(hero, damageMultiplierEnemy)
@@ -185,7 +186,7 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
         if (hero.health <= 0) {
             return 2
         } else {
-            view.content.output.respond("A ${enemy.name} attacked, your health is now ${hero.health}")
+            respond("A ${enemy.name} attacked, your health is now ${hero.health}")
             return 0
         }
     }
@@ -219,5 +220,14 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
             }
         }
         return matrix[rows - 1][cols - 1].toDouble() + 5.0
+    }
+
+    private fun respond(message: String?, bold: Boolean = true) {
+        view.content.output.respond(message, bold)
+        scrollToBottom()
+    }
+
+    private fun scrollToBottom() {
+        view.content.scroll.verticalScrollBar.value = view.content.scroll.verticalScrollBar.maximum
     }
 }
