@@ -224,14 +224,19 @@ class Controller {
 
         // when combat is active, use combat state machine instead of normal input parser
         if (combat != null) {
+            // Process combat commands if a combat session is active.
             when (combat!!.combatParse(splitInput)) {
                 0 -> {
+                    // Case 0: Combat action executed, but no terminal event occurred.
+                    // Update the player info and map, then continue the combat.
                     updateInfo()
                     updateMap()
                     return
                 }
 
                 1 -> {
+                    // Case 1: The enemy has been defeated.
+                    // End the combat session by setting combat to null, update info and map.
                     combat = null
                     updateInfo()
                     updateMap()
@@ -239,18 +244,19 @@ class Controller {
                 }
 
                 2 -> {
+                    // Case 2: The hero has died during combat.
+                    // Trigger the heroDeath() routine, update info and map, and end the combat session.
                     heroDeath()
                     updateInfo()
                     updateMap()
-
                     combat = null
                     return
                 }
 
                 3 -> {
-                    // move to last room
+                    // Case 3: The hero successfully escaped combat.
+                    // Move the hero back to their last room, update info and map, and end the combat session.
                     model.hero.room = model.hero.lastRoom
-
                     updateInfo()
                     updateMap()
                     combat = null
@@ -259,6 +265,7 @@ class Controller {
             }
             return
         }
+
 
         // converting to lowercase as combat handling sometimes requires case sensitivity
         splitInput.forEach { it.lowercase() }
@@ -484,68 +491,95 @@ class Controller {
 
             // shop handling
             "shop" -> {
+                // Create a temporary inventory for the shop containing all available items.
                 val inv = Inventory(Data.weapons.size + Data.armors.size + Data.consumables.size)
+
+                // Add weapons to the shop inventory with scaled damage values.
                 for (weapon in Data.weapons) {
                     val tWeapon = weapon.copy()
                     tWeapon.damage = ((weapon.damage + 6) * model.map.scale).toInt()
                     inv.add(tWeapon)
                 }
+
+                // Add armors to the shop inventory with scaled absorption values.
                 for (armor in Data.armors) {
                     val tArmor = armor.copy()
                     tArmor.absorption = ((armor.absorption + 3) * model.map.scale).toInt()
                     inv.add(tArmor)
                 }
+
+                // Add consumables to the shop inventory.
                 for (consumable in Data.consumables) {
                     inv.add(consumable.copy())
                 }
+
+                // Ensure the hero is in a shop room before proceeding.
                 if (model.hero.room != model.map.shopRoom) {
                     respond("You are not in a shop room")
                     return
                 }
+
                 when (splitInput[1]) {
                     "sell" -> {
+                        // Selling an item from the hero's inventory.
+
                         if (splitInput.size < 4) {
-                            // add usage
+                            // Not enough arguments provided, possibly missing item type or index.
                             return
                         }
+
+                        // Select items of the given type from the hero's inventory.
                         val selection = createSelection(splitInput[2], model.hero.room.inventory)
 
                         if (selection.isEmpty()) {
-                            respond("there are no items of type ${splitInput[2]} in your inventory")
+                            respond("There are no items of type ${splitInput[2]} in your inventory")
                         }
 
                         try {
+                            // Remove the selected item from the hero's inventory and add coins.
                             model.hero.inventory.remove(selection[splitInput[3].toInt()])
                             model.hero.coins += 15
                         } catch (e: IndexOutOfBoundsException) {
-                            respond("this item id doesn't correspond to an item in your inventory")
+                            // Invalid item index provided.
+                            respond("This item ID doesn't correspond to an item in your inventory")
                         } catch (e: ItemNotThereException) {
+                            // Handle custom exception for missing item.
                             respond(e.message)
                         }
                     }
 
                     "buy" -> {
+                        // Buying an item from the shop inventory.
+
                         if (splitInput.size < 4) {
-                            // add usage
+                            // Not enough arguments provided, possibly missing item type or index.
                             return
                         }
 
+                        // Select items of the given type from the shop inventory.
                         val selection = createSelection(splitInput[2], inv)
+
                         try {
-                            if (model.hero.coins <= 150) {
+                            if (model.hero.coins >= 150) {
+                                // If the hero has enough coins, complete the purchase.
                                 model.hero.inventory.add(selection[splitInput[3].toInt()])
                                 model.hero.coins -= 150
                             } else {
+                                // Not enough coins to make the purchase.
                                 respond("You don't have enough coins left!")
                             }
                         } catch (e: IndexOutOfBoundsException) {
-                            respond("this item id doesn't correspond to an item in the shop")
+                            // Invalid item index provided.
+                            respond("This item ID doesn't correspond to an item in the shop")
                         } catch (e: ItemNotThereException) {
+                            // Handle custom exception for missing item.
                             respond(e.message)
                         }
                     }
 
                     "info" -> {
+                        // Display shop inventory details in a formatted manner.
+
                         val style = SimpleAttributeSet()
                         StyleConstants.setFontFamily(style, Font.MONOSPACED)
 
@@ -553,6 +587,8 @@ class Controller {
 
                         inv.export().forEach { block ->
                             val maxLengths = Array(4) { 0 }
+
+                            // Determine the maximum column width for alignment.
                             block.forEach { row ->
                                 row.forEachIndexed { i, word ->
                                     if (word.length + 2 > maxLengths[i]) {
@@ -561,14 +597,16 @@ class Controller {
                                 }
                             }
 
+                            // Format and insert each row into the document.
                             block.forEach { row ->
                                 row.forEachIndexed { i, word ->
                                     println(word.padEnd(maxLengths[i]))
                                     doc.insertString(doc.length, word.padEnd(maxLengths[i]), style)
                                 }
-
                                 doc.insertString(doc.length, "\n", style)
                             }
+
+                            // Ensure the latest content is visible.
                             scrollToBottom()
                         }
                     }
