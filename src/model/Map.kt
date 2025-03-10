@@ -94,9 +94,9 @@ class Map(size: Point, floor: Int) {
         startRoom = map[map.size / 2][map.size / 2]!!
 
         if (floor == 0) {
-            startRoom.inventory.add(Data.armors[Random.nextInt(0,Data.armors.size)])
-            startRoom.inventory.add(Data.weapons[Random.nextInt(0,Data.weapons.size)])
-            startRoom.inventory.add(Data.consumables[Random.nextInt(0,Data.consumables.size)])
+            startRoom.inventory.add(Data.armors[Random.nextInt(0, Data.armors.size)])
+            startRoom.inventory.add(Data.weapons[Random.nextInt(0, Data.weapons.size)])
+            startRoom.inventory.add(Data.consumables[Random.nextInt(0, Data.consumables.size)])
         }
 
         // create room list to place items and entities in
@@ -104,55 +104,60 @@ class Map(size: Point, floor: Int) {
         roomList.remove(startRoom)
 
         // special rooms
-        val endRooms = mutableListOf<Room>()
+        val specialRooms = mutableListOf<Room>()
 
         roomList.forEach { room ->
             if (neighbours(room.coords).filterNotNull().size == 1) {
-                endRooms.add(room)
+                specialRooms.add(room)
             }
         }
 
         // room to advance to next floor
-        endRoom = endRooms.random()
+        endRoom = specialRooms.random()
         roomList.remove(endRoom)
-        endRooms.remove(endRoom)
+        specialRooms.remove(endRoom)
 
-        for (i in 0..< 3) {
+        for (i in 0..<3) {
             if (Random.nextInt(3) == 0) {
-                val room = endRooms.randomOrNull()
+                val room = specialRooms.randomOrNull()
                 if (room != null) {
                     roomList.remove(room)
                     chestRooms.add(room)
-                    endRooms.remove(room)
+                    specialRooms.remove(room)
                 }
             }
         }
 
-        shopRoom = if (Random.nextInt(3) <= 1) {
-            endRooms.randomOrNull()
-
+        if (Random.nextInt(3) <= 1) {
+            shopRoom = specialRooms.randomOrNull()
         } else {
-            null
+            shopRoom = null
         }
+
         roomList.remove(shopRoom)
         // add items to chest rooms
         chestRooms.forEach {
             var item: Item
             // add armors
             for (i in 0..<Random.nextInt(1, 3)) {
-                item = Data.armors[Random.nextInt(0,Data.armors.size)].copy()
+                item = Data.armors[Random.nextInt(0, Data.armors.size)].copy()
                 item.absorption = ((item.absorption + Random.nextInt(-2, 3)) * scale).toInt()
                 map[it.coords.x][it.coords.y]!!.inventory.add(item)
             }
             // add weapons
             for (i in 0..<Random.nextInt(1, 3)) {
-                item = Data.weapons[Random.nextInt(0,Data.weapons.size)].copy()
+                item = Data.weapons[Random.nextInt(0, Data.weapons.size)].copy()
                 item.damage = ((item.damage + Random.nextInt(-5, 6)) * scale).toInt()
                 map[it.coords.x][it.coords.y]!!.inventory.add(item)
             }
             // add consumables
             for (i in 0..<Random.nextInt(1, 4)) {
-                map[it.coords.x][it.coords.y]!!.inventory.add(Data.consumables[Random.nextInt(0,Data.consumables.size)])
+                map[it.coords.x][it.coords.y]!!.inventory.add(
+                    Data.consumables[Random.nextInt(
+                        0,
+                        Data.consumables.size
+                    )]
+                )
             }
         }
         roomList.shuffle()
