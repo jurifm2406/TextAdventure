@@ -7,17 +7,17 @@ import model.objects.base.item.Weapon
 
 object Data {
     val weapons: Array<Weapon> = arrayOf(
-        Weapon("hammer", "stuns", 40, 3),
-        Weapon("poisoned dagger", "poisons", 10, 1),
-        Weapon("longsword", "enhances crits", 25, 2),
-        Weapon("whip", "bleed", 10, 1)
+        Weapon("hammer", "stuns", 45, 3),
+        Weapon("poisoned dagger", "poisons", 15, 1),
+        Weapon("longsword", "enhances crits", 30, 2),
+        Weapon("whip", "bleed", 15, 1)
     )
 
     val armors: Array<Armor> = arrayOf(
-        Armor("vampire's robes", "life steal", 5, 1),
-        Armor("cloak", "enhances crit chance", 5, 1),
-        Armor("paladin's chest plate", "protects from death once", 10, 2),
-        Armor("plate armor", "all enemies deal 30% less damage", 10, 2)
+        Armor("vampire's robes", "life steal", 7, 1),
+        Armor("cloak", "enhances crit chance", 7, 1),
+        Armor("paladin's chest plate", "protects from death once", 12, 2),
+        Armor("plate armor", "all enemies deal 30% less damage", 12, 2)
     )
 
     val consumables: Array<Consumable> = arrayOf(
@@ -29,14 +29,14 @@ object Data {
 
     val enemies: Array<Enemy> = arrayOf(
         Enemy("Orc", 150),
-        Enemy("Thief", 100),
-        Enemy("Goblin", 80),
-        Enemy("Troll", 200),
+        Enemy("Thief", 120),
+        Enemy("Goblin", 100),
+        Enemy("Troll", 180),
         Enemy("Bandit", 120),
         Enemy("Skeleton", 90),
         Enemy("Dark Mage", 130),
         Enemy("Giant Spider", 110),
-        Enemy("Werewolf", 180),
-        Enemy("Demon", 250)
+        Enemy("Werewolf", 160),
+        Enemy("Demon", 180)
     )
 }
