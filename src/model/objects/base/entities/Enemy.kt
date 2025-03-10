@@ -5,6 +5,7 @@ import model.objects.base.item.Armor
 import model.objects.base.item.Weapon
 import model.objects.world.Room
 import java.awt.Point
+
 /**
  * The Enemy class represents an enemy character in the game. It extends the base Entity class,
  * providing enemy-specific properties and behaviors. This class is primarily used to generate

@@ -3,6 +3,7 @@ package model.objects.world
 import model.objects.base.Inventory
 import model.objects.base.entities.Entity
 import java.awt.Point
+
 /**
  * Represents a room in the game world.
  *

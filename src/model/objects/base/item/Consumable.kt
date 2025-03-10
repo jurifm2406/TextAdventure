@@ -3,7 +3,9 @@ package model.objects.base.item
 import model.objects.base.entities.Entity
 
 /**
- * uses a lambda function with a target (Entity) to store it's effect
+ * @param name the name of the consumable
+ * @param description description of consumable, describes the effect
+ * @param effect the effect of the consumable, represented by a lambda with the target as parameter
  */
 class Consumable(name: String, description: String, val effect: (Entity) -> Unit, val destroyOnUse: Boolean = true) :
     Item(name, description) {

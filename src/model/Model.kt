@@ -3,6 +3,7 @@ package model
 import model.objects.base.entities.Hero
 import java.awt.Point
 import javax.swing.table.DefaultTableModel
+
 /**
  * The main game model that manages the hero, map, and game state.
  *

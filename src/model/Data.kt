@@ -7,6 +7,9 @@ import model.objects.base.item.Consumable
 import model.objects.base.item.Weapon
 import kotlin.random.Random
 
+/**
+ * the object that holds templates for all weapons, armors, consumables and enemies to be changed and used during map creation
+ */
 object Data {
     val weapons: Array<Weapon> = arrayOf(
         Weapon("hammer [3AP]", "stuns", 45, 3, effects = mutableListOf({ e: Entity ->

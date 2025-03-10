@@ -1,6 +1,7 @@
 package model.objects.base.entities
 
 import model.objects.world.Room
+
 /**
  * The Hero class represents the player's character in the game.
  *

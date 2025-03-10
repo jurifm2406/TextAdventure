@@ -1,4 +1,5 @@
 package model.objects.base.item
+
 /**
  * The Item class serves as an abstract base for all items in the game.
  *

@@ -8,6 +8,7 @@ import model.objects.base.item.Weapon
 import model.objects.world.CantUnequipException
 import model.objects.world.Room
 import java.awt.Point
+
 /**
  * The Entity class serves as an abstract base for all characters and creatures in the game,
  * such as heroes and enemies. health, inventory management, combat actions, and room navigation.

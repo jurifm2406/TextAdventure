@@ -62,6 +62,7 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
                     hero.tick()
                     return enemyTurn()
                 }
+
                 "help" -> {
                     respond("available commands:")
                     respond("attack: deal damage to the enemy, costs action points according to your weapon")
@@ -70,6 +71,7 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
                     respond("escape: try to escape the combat")
                     respond("end: end your turn")
                 }
+
                 else -> respond("Invalid action.")
             }
         } else if (mode == 1) {

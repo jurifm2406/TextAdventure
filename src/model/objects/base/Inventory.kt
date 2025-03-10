@@ -9,6 +9,8 @@ import model.objects.world.ItemNotThereException
 /**
  * holds items for rooms or entities
  * inherits from arraylist as it largely is one
+ *
+ * @param maxSize the maximum amount of items the inventory can hold
  */
 class Inventory(var maxSize: Int) : ArrayList<Item>() {
     /**
