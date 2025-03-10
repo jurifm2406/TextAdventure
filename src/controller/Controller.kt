@@ -5,6 +5,7 @@ import model.Map
 import model.Model
 import model.objects.base.Inventory
 import model.objects.base.entities.Enemy
+import model.objects.base.entities.Hero
 import model.objects.base.item.Armor
 import model.objects.base.item.Consumable
 import model.objects.base.item.Item
@@ -51,7 +52,7 @@ class Controller {
         view.menuBar.exit.addActionListener { exitProcess(0) }
         view.content.input.addActionListener {
             respond(view.content.input.text, false)
-            history.add(view.content.input.text)
+            history.add(1, view.content.input.text)
             parseInput(view.content.input.text)
             view.content.input.text = ""
             historyIndex = 0
@@ -112,6 +113,7 @@ class Controller {
 
         infoData.add(arrayOf("floor", "", model.floor.toString()))
         infoData.add(arrayOf("health", "", model.hero.health.toString()))
+        infoData.add(arrayOf("gold", "", model.hero.coins.toString()))
         infoData.add(Array(3) { "" })
 
         infoData.add(arrayOf("WEAPONS", "", ""))
@@ -243,6 +245,10 @@ class Controller {
 
                     if (model.hero.room in model.map.chestRooms) {
                         respond("the room you enter is empty except for a single chest")
+                    }
+
+                    if (model.hero.room == model.map.endRoom) {
+                        respond("before you, you see a ladder leading up")
                     }
                 } catch (e: RoomNotThereException) {
                     respond(e.message)
@@ -397,6 +403,7 @@ class Controller {
                         }
 
                         doc.insertString(doc.length, "\n", style)
+                        scrollToBottom()
                     }
                 }
             }
@@ -487,6 +494,7 @@ class Controller {
 
                                 doc.insertString(doc.length, "\n", style)
                             }
+                            scrollToBottom()
                         }
                     }
                 }
@@ -630,7 +638,11 @@ class Controller {
     }
 
     private fun heroDeath() {
-        model = Model("")
+        respond("you died! the next hero approaches to tower.")
+        model.floor = 0
+        model.map = Map(model.mapSize, model.floor)
+        model.hero = Hero("", model.map.startRoom)
+        clearMap()
         updateInfo()
         updateMap()
     }
