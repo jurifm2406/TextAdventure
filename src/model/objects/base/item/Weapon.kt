@@ -1,6 +1,12 @@
 package model.objects.base.item
 
 import model.objects.base.entities.Entity
+
+/**
+ * uses a list of lambdas to store possibly multiple weapon effects
+ * this is kind of a janky workaround and only works for some effects
+ * action points are used up when attacking in combat, "heavier" weapons need more points
+ */
 class Weapon(
     name: String = "fists",
     description: String = "mighty fists",

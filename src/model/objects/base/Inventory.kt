@@ -6,7 +6,14 @@ import model.objects.base.item.Item
 import model.objects.base.item.Weapon
 import model.objects.world.ItemNotThereException
 
+/**
+ * holds items for rooms or entities
+ * inherits from arraylist as it largely is one
+ */
 class Inventory(var maxSize: Int) : ArrayList<Item>() {
+    /**
+     * add item with respect to max size
+     */
     override fun add(item: Item): Boolean {
         if (size >= maxSize) {
             throw InventoryFullException()
@@ -15,6 +22,9 @@ class Inventory(var maxSize: Int) : ArrayList<Item>() {
         return super.add(item)
     }
 
+    /**
+     * remove item from inventory, overridden to throw itemnotthereexception
+     */
     override fun remove(item: Item): Boolean {
         if (!contains(item)) {
             throw ItemNotThereException(item.name)
@@ -22,6 +32,9 @@ class Inventory(var maxSize: Int) : ArrayList<Item>() {
         return super.remove(item)
     }
 
+    /**
+     * export inventory information to be used by inspect() and other methods
+     */
     fun export(): Array<Array<Array<String>>> {
         val export = mutableListOf<Array<Array<String>>>()
 

@@ -14,8 +14,11 @@ class Enemy(
     armor: Armor = Armor(),
     room: Room = Room(Point(-1, -1))
 ) :
-    Entity(name, health, inventory, weapon, armor, room){
+    Entity(name, health, inventory, weapon, armor, room) {
 
+    /**
+     * copy enemy for map generation
+     */
     fun copy(): Enemy {
         return Enemy(
             name,

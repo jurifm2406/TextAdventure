@@ -23,7 +23,11 @@ abstract class Entity(
     var health: Int = maxHealth
     var lastRoom = room
 
+    /**
+     * dropping inventory to room and removing all references so the garbage collector takes care of the dead enemy
+     */
     private fun die() {
+        // hardcoded implementation of the resurrect function of the paladin's chest plate
         if (armor.name == "paladin's chest plate [2AP]") {
             health = 40
             armor = Armor()
@@ -34,6 +38,9 @@ abstract class Entity(
         room.entities.remove(this)
     }
 
+    /**
+     * apply effects caused by weapons/armors/consumables
+     */
     fun tick() {
         stunned = false
         effects.forEach {
@@ -42,20 +49,32 @@ abstract class Entity(
         }
     }
 
+    /**
+     * adding armor absorption to entity absorption to be used in next attack
+     */
     fun defend() {
         absorption += armor.absorption
     }
 
+    /**
+     * heal with respect to max health
+     */
     fun heal(amount: Int) {
         health += amount
         health = if (health > maxHealth) maxHealth else health
     }
 
+    /**
+     * damage with possible invocation of death when health drops below zero through damage
+     */
     fun damage(amount: Int) {
         health -= amount
         if (health < 0) die()
     }
 
+    /**
+     * attack other entity, calculating in attack multiplier and target absorption
+     */
     fun attack(target: Entity, multiplier: Double) {
         var damage = (weapon.damage * multiplier - target.absorption).toInt()
         target.absorption = 0
@@ -64,9 +83,13 @@ abstract class Entity(
         target.damage(damage)
     }
 
+    /**
+     * pick up item from current room
+     */
     fun pickup(item: Item) {
         room.inventory.remove(item)
         inventory.add(item)
+        // equipping immediately if no weapon or armor is equipped
         if (weapon.name == "fists" && item is Weapon) {
             equip(item)
         }
@@ -75,11 +98,18 @@ abstract class Entity(
         }
     }
 
+    /**
+     * drop item to room
+     */
     fun drop(item: Item) {
         inventory.remove(item)
         room.inventory.add(item)
     }
 
+    /**
+     * equip item from inventory
+     * if no weapon or armor is equipped, fists or nothing is replaced
+     */
     fun equip(item: Item) {
         if (item is Weapon) {
             if (weapon.name == "fists") {
@@ -104,6 +134,9 @@ abstract class Entity(
         }
     }
 
+    /**
+     * unequip weapon or armor (replacing it with default)
+     */
     fun unequip(type: String) {
         if (type == "weapon") {
             if (weapon.name == "fists") {
@@ -122,6 +155,9 @@ abstract class Entity(
         }
     }
 
+    /**
+     * use consumable
+     */
     fun use(consumable: Consumable, target: Entity) {
         consumable.effect(target)
 
