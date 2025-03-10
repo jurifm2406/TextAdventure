@@ -401,6 +401,20 @@ class Controller {
             }
 
             "shop" -> {
+                val inv = Inventory(Data.weapons.size + Data.armors.size + Data.consumables.size)
+                for (weapon in Data.weapons) {
+                    val tWeapon = weapon.copy()
+                    tWeapon.damage = ((weapon.damage + 6) * model.map.scale).toInt()
+                    inv.add(tWeapon)
+                }
+                for (armor in Data.armors) {
+                    val tArmor = armor.copy()
+                    tArmor.absorption = ((armor.absorption + 3) * model.map.scale).toInt()
+                    inv.add(tArmor)
+                }
+                for (consumable in Data.consumables) {
+                    inv.add(consumable.copy())
+                }
                 if (model.hero.room != model.map.shopRoom) {
                     respond("You are not in a shop room")
                     return
@@ -432,20 +446,7 @@ class Controller {
                             // add usage
                             return
                         }
-                        val inv = Inventory(Data.weapons.size + Data.armors.size + Data.consumables.size)
-                        for (weapon in Data.weapons) {
-                            val tWeapon = weapon.copy()
-                            tWeapon.damage = ((weapon.damage + 6) * model.map.scale).toInt()
-                            inv.add(tWeapon)
-                        }
-                        for (armor in Data.armors) {
-                            val tArmor = armor.copy()
-                            tArmor.absorption = ((armor.absorption + 3) * model.map.scale).toInt()
-                            inv.add(tArmor)
-                        }
-                        for (consumable in Data.consumables) {
-                            inv.add(consumable.copy())
-                        }
+
                         val selection = createSelection(splitInput[2], inv)
                         try {
                             if (model.hero.coins >= 150) {
@@ -463,23 +464,12 @@ class Controller {
                     }
 
                     "info" -> {
-                        val tInv = Inventory(Data.weapons.size + Data.armors.size + Data.consumables.size)
-                        for (weapon in Data.weapons) {
-                            tInv.add(weapon)
-                        }
-                        for (armor in Data.armors) {
-                            tInv.add(armor)
-                        }
-                        for (consumable in Data.consumables) {
-                            tInv.add(consumable)
-                        }
-
                         val style = SimpleAttributeSet()
                         StyleConstants.setFontFamily(style, Font.MONOSPACED)
 
                         val doc = view.content.output.styledDocument
 
-                        tInv.export().forEach { block ->
+                        inv.export().forEach { block ->
                             val maxLengths = Array(4) { 0 }
                             block.forEach { row ->
                                 row.forEachIndexed { i, word ->
