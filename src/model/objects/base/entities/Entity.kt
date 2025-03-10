@@ -8,7 +8,20 @@ import model.objects.base.item.Weapon
 import model.objects.world.CantUnequipException
 import model.objects.world.Room
 import java.awt.Point
-
+/**
+ * The Entity class serves as an abstract base for all characters and creatures in the game,
+ * such as heroes and enemies. health, inventory management, combat actions, and room navigation.
+ *
+ * @property name The name of the entity.
+ * @property maxHealth The maximum health points of the entity.
+ * @property inventory The inventory holding items available to the entity.
+ * @property weapon The weapon currently equipped by the entity.
+ * @property armor The armor currently equipped by the entity.
+ * @property room The room in which the entity is currently located.
+ * @property effects A list of active effects (functions) applied to the entity.
+ * @property stunned Flag indicating whether the entity is stunned.
+ * @property absorption The absorption value used to mitigate incoming damage.
+ */
 abstract class Entity(
     val name: String,
     val maxHealth: Int = 20,
