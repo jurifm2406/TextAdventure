@@ -38,7 +38,7 @@ class Controller {
     private val view = View(model)
     private var combat: Combat? = null
     private val history: MutableList<String> = mutableListOf("")
-    private var historyIndex = -1
+    private var historyIndex = 0
 
     private val movement = mapOf(
         "north" to Directions.WEST,
@@ -51,16 +51,16 @@ class Controller {
         view.menuBar.exit.addActionListener { exitProcess(0) }
         view.content.input.addActionListener {
             respond(view.content.input.text, false)
-            history.add(0, view.content.input.text)
+            history.add(view.content.input.text)
             parseInput(view.content.input.text)
             view.content.input.text = ""
-            historyIndex = -1
+            historyIndex = 0
         }
         view.content.input.getInputMap(JTextField.WHEN_FOCUSED).put(KeyStroke.getKeyStroke("UP"), "arrowUp")
         view.content.input.getInputMap(JTextField.WHEN_FOCUSED).put(KeyStroke.getKeyStroke("DOWN"), "arrowDown")
         view.content.input.actionMap.put("arrowUp", object : AbstractAction() {
             override fun actionPerformed(e: ActionEvent) {
-                if (history.size - 2 > historyIndex) {
+                if (history.size - 1 > historyIndex) {
                     historyIndex++
                     view.content.input.text = history[historyIndex]
                 }
@@ -450,10 +450,9 @@ class Controller {
 
                         val selection = createSelection(splitInput[2], inv)
                         try {
-                            if (model.hero.coins >= 150) {
+                            if (model.hero.coins <= 150) {
                                 model.hero.inventory.add(selection[splitInput[3].toInt()])
                                 model.hero.coins -= 150
-                                respond("You bought a ${selection[splitInput[3].toInt()].name}")
                             } else {
                                 respond("You don't have enough coins left!")
                             }
