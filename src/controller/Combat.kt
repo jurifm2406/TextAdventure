@@ -28,7 +28,7 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
                 "use" -> return (useItem(input[1]))
                 "escape" -> return (escape())
                 "end" -> {
-                    actionPoints = 5
+                    actionPoints += 5
                     enemy.tick()
                     hero.tick()
                     return enemyTurn()
@@ -65,10 +65,13 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
                 return 0
             } else if (mode == 1) {
                 end = System.currentTimeMillis()
-                score = (needlemanWunsch(puzzle, input) - ((end - start - puzzle.length * 300.0) / 1000.0)) / 40.0
-                //if (score < 2) {
-                //    score = 2.0
-                //}
+                score = (needlemanWunsch(puzzle, input) - ((end - start - puzzle.length * 300.0) / 1000.0)) / 5.0
+                if (score > 2.0) {
+                    score = 2.0
+                }
+                if (score < 0.8){
+                    score = 0.8
+                }
 
                 if (end - start > 2000 + puzzle.length * 500) {
                     actionPoints -= hero.weapon.actionPoints
@@ -79,7 +82,6 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
                 }
                 val decimal = BigDecimal(score).setScale(2, RoundingMode.HALF_EVEN)
                 view.content.output.respond("Your score is $decimal")
-                score = 1.0
                 mode = 0
             }
         }
@@ -88,6 +90,7 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
             actionPoints -= hero.weapon.actionPoints
             view.content.output.respond("You now have $actionPoints action points")
             hero.attack(enemy, (score))
+            score = 1.0
 
             damageMultiplierHero = 1.0
             if (enemy.health <= 0) {
@@ -96,6 +99,7 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
                 val reward = 10 + Random.nextInt(-2, 2)
                 hero.coins += reward
                 view.content.output.respond("You recieved $reward coins")
+                hero.room.entities.remove(enemy)
 
                 mode = 0
                 return 1
@@ -117,7 +121,7 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
         actionPoints -= hero.armor.actionPoints
 
         view.content.output.respond("You now have $actionPoints action points")
-        view.content.output.respond("You take a defensive position the ${enemy.name} now does $damageMultiplierEnemy times damage")
+        view.content.output.respond("You take a defensive position the ${enemy.name} now does ${hero.armor.absorption} less damgae")
         return 0
     }
 

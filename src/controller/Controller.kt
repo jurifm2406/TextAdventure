@@ -448,9 +448,10 @@ class Controller {
                         }
                         val selection = createSelection(splitInput[2], inv)
                         try {
-                            if (model.hero.coins <= 150) {
+                            if (model.hero.coins >= 150) {
                                 model.hero.inventory.add(selection[splitInput[3].toInt()])
                                 model.hero.coins -= 150
+                                respond("You bought a ${selection[splitInput[3].toInt()].name}")
                             } else {
                                 respond("You don't have enough coins left!")
                             }
