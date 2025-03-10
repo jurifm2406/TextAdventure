@@ -34,10 +34,10 @@ fun JTextPane.respond(message: String?, bold: Boolean = true) {
 }
 
 class Controller {
-    private val model = Model("test")
+    private var model = Model("test")
     private val view = View(model)
     private var combat: Combat? = null
-    private val history: MutableList<String> = mutableListOf()
+    private val history: MutableList<String> = mutableListOf("")
     private var historyIndex = -1
 
     private val movement = mapOf(
@@ -54,12 +54,13 @@ class Controller {
             history.add(0, view.content.input.text)
             parseInput(view.content.input.text)
             view.content.input.text = ""
+            historyIndex = -1
         }
         view.content.input.getInputMap(JTextField.WHEN_FOCUSED).put(KeyStroke.getKeyStroke("UP"), "arrowUp")
         view.content.input.getInputMap(JTextField.WHEN_FOCUSED).put(KeyStroke.getKeyStroke("DOWN"), "arrowDown")
         view.content.input.actionMap.put("arrowUp", object : AbstractAction() {
             override fun actionPerformed(e: ActionEvent) {
-                if (history.size - 1 > historyIndex) {
+                if (history.size - 2 > historyIndex) {
                     historyIndex++
                     view.content.input.text = history[historyIndex]
                 }
@@ -640,14 +641,8 @@ class Controller {
     }
 
     private fun heroDeath() {
-        respond("You died!")
-        for (item in model.hero.inventory) {
-            model.hero.room.inventory.add(item)
-        }
-        model.hero.inventory.clear()
-        respond("You respawned")
-        view.content.sidebar.map.setValueAt("x", model.hero.room.coords.x, model.hero.room.coords.y)
-        model.hero.room = model.map.startRoom
-        model.hero.health = 300
+        model = Model("")
+        updateInfo()
+        updateMap()
     }
 }
