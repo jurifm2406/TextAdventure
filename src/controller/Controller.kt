@@ -517,6 +517,7 @@ class Controller {
             "help" -> {
                 if (splitInput.size < 2) {
                     respond("prints information about available commands")
+                    respond("use with subcommands to get information about them")
                     respond("usage: help [command]")
                     respond("commands:")
                     respond("- move")

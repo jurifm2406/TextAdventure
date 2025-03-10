@@ -1,27 +1,33 @@
 package model
 
 import model.objects.base.entities.Enemy
+import model.objects.base.entities.Entity
 import model.objects.base.item.Armor
 import model.objects.base.item.Consumable
 import model.objects.base.item.Weapon
+import kotlin.random.Random
 
 object Data {
     val weapons: Array<Weapon> = arrayOf(
-        Weapon("hammer", "stuns", 45, 3),
-        Weapon("poisoned dagger", "poisons", 15, 1),
-        Weapon("longsword", "enhances crits", 30, 2),
-        Weapon("whip", "bleed", 15, 1)
+        Weapon("hammer [3AP]", "stuns", 45, 3, effects = mutableListOf({ e: Entity ->
+            if (Random.nextInt(2) == 0) {
+                e.stunned = true
+            }
+        })),
+        Weapon("poisoned dagger [1AP]", "poisons", 15, 1, effects = mutableListOf({ it.damage(5) })),
+        Weapon("longsword [2AP]", "enhances crits", 30, 2),
+        Weapon("whip [1AP]", "bleed", 15, 1, effects = mutableListOf({ if (Random.nextInt(4) == 0) it.damage(30) }))
     )
 
     val armors: Array<Armor> = arrayOf(
-        Armor("vampire's robes", "life steal", 7, 1),
-        Armor("cloak", "enhances crit chance", 7, 1),
-        Armor("paladin's chest plate", "protects from death once", 12, 2),
-        Armor("plate armor", "all enemies deal 30% less damage", 12, 2)
+        Armor("vampire's robes [1AP]", "life steal", 7, 1),
+        Armor("cloak [1AP]", "enhances crit chance", 7, 1),
+        Armor("paladin's chest plate [2AP]", "protects from death once", 12, 2),
+        Armor("plate armor [2AP]", "all enemies deal 20% less damage", 12, 2)
     )
 
     val consumables: Array<Consumable> = arrayOf(
-        Consumable("small health potion", "heals 10 health", { entity -> entity.heal(10) }),
+        Consumable("small health potion", "heals 15 health", { entity -> entity.heal(15) }),
         Consumable("medium health potion", "heals 25 health", { entity -> entity.heal(25) }),
         Consumable("large health potion", "heals 40 health", { entity -> entity.heal(40) }),
         Consumable("throwing dagger", "deals 10 damage", { entity -> entity.damage(10) })

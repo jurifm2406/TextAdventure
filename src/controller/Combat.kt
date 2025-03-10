@@ -6,6 +6,7 @@ import model.objects.base.item.Consumable
 import view.View
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlin.math.round
 import kotlin.random.Random
 import kotlin.streams.asSequence
 
@@ -34,6 +35,15 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
                     return enemyTurn()
                 }
 
+                "help" -> {
+                    respond("available commands:")
+                    respond("attack: deal damage to the enemy, costs action points according to your weapon")
+                    respond("defend: reduces the enemy damage by the absorption of your armor")
+                    respond("use: uses a consumable")
+                    respond("escape: try to escape the combat")
+                    respond("end: end your turn")
+                }
+
                 else -> respond("Invalid action.")
             }
         } else if (mode == 1) {
@@ -47,7 +57,7 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
             respond("You don't have enough action points to use that weapon")
             return 0
         }
-        if ((Random.nextInt(0, 10) < 3) || (mode == 1)) {
+        if ((Random.nextInt(0, 10) < 2) || (mode == 1)) {
             if (mode == 0) {
                 respond("You have the chance for critical damage")
                 // generate puzzle
@@ -67,11 +77,15 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
             } else if (mode == 1) {
                 end = System.currentTimeMillis()
                 score = (needlemanWunsch(puzzle, input) - ((end - start - puzzle.length * 300.0) / 1000.0)) / 5.0
-                if (score > 2.0) {
+                if (hero.weapon.name != "longsword [2AP]" && score > 2.0) {
                     score = 2.0
                 }
                 if (score < 0.8) {
                     score = 0.8
+                }
+
+                if (hero.weapon.name == "longsword [2AP]") {
+                    score += 0.3
                 }
 
                 if (end - start > 4000 + puzzle.length * 500) {
@@ -90,6 +104,11 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
         if (mode == 0) {
             actionPoints -= hero.weapon.actionPoints
             respond("You now have $actionPoints action points")
+
+            if (hero.armor.name == "vampire's robes [1AP]") {
+                hero.heal(round(hero.weapon.damage * score * 0.2).toInt())
+            }
+
             hero.attack(enemy, (score))
             score = 1.0
 
@@ -178,12 +197,19 @@ class Combat(private val enemy: Entity, private val hero: Hero, private val view
             respond("the ${enemy.name} is stunned, it can't attack")
             return 0
         }
+        if (hero.armor.name == "plate armor [2AP]") {
+            damageMultiplierEnemy *= 0.8
+        }
         enemy.attack(hero, damageMultiplierEnemy)
 
         damageMultiplierEnemy = 1.0
 
         // check if hero is dead
         if (hero.health <= 0) {
+            if (hero.armor.name == "paladin's chest plate [2AP]") {
+                respond("you got saved by your chest plate, it's now broken")
+                return 0
+            }
             return 2
         } else {
             respond("A ${enemy.name} attacked, your health is now ${hero.health}")

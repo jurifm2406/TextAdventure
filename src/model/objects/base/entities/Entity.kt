@@ -24,6 +24,10 @@ abstract class Entity(
     var lastRoom = room
 
     private fun die() {
+        if (armor.name == "paladin's chest plate [2AP]") {
+            health = 40
+            armor = Armor()
+        }
         this.inventory.forEach { room.inventory.add(it) }
 
         room = Room(Point(-1, -1))
