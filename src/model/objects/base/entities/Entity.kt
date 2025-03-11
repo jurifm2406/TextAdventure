@@ -25,14 +25,14 @@ import java.awt.Point
  */
 abstract class Entity(
     val name: String,
-    val maxHealth: Int = 20,
+    private val maxHealth: Int = 20,
     val inventory: Inventory = Inventory(8),
     var weapon: Weapon = Weapon(),
     var armor: Armor = Armor(),
     var room: Room,
     val effects: MutableList<(Entity) -> Unit> = mutableListOf(),
     var stunned: Boolean = false,
-    var absorption: Int = 0
+    private var absorption: Int = 0
 ) {
     var health: Int = maxHealth
     var lastRoom = room
