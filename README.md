@@ -186,5 +186,5 @@ point marked with ? considered nice to have but optional
 - [X] movement 22.1.
 - [X] items and entities in rooms 31.1.
 - [X] simple combat 10.2.
-- [ ] advanced combat 24.2.
-- [ ] progression 10.3.
+- [X] advanced combat 24.2.
+- [X] progression 10.3.
