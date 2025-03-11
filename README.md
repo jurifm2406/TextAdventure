@@ -108,6 +108,13 @@ Der Befehl `end` beendet den eigenen Zug während eines Kampfes. Mit diesem Befe
 
 Alle Befehle sind auch über den help command im Spiel erklärt. Wobei die Kampf Befehle nur innerhalb eines Kampfes angezeigt werden.
 
+
+## Bug list
+
+- Effekte sind hardcoded, es existiert kein einheitliches System zur Verarbeitung
+- Effekte werden teilweise nicht dem Spieler gemeldet
+- Map Table text nicht perfekt mittig
+
 ## used tools
 
 - kotlin
