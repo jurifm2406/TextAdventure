@@ -33,9 +33,6 @@ In Tower of Text existieren besondere Räume in Sackgassen, diese können der en
 
 ## Spielmechanik & Befehle
 
-In diesem Dokument findet man eine detaillierte Beschreibung aller verfügbaren Befehle in *Textadventure*. Jeder Befehl wird in einem Fließtext erläutert, sodass man genau versteht, wie er korrekt eingesetzt wird und welche Funktion dahintersteht.
-
-
 ## Bewegung 
 
 ### move
