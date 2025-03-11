@@ -28,6 +28,7 @@ Ein x markiert den ausgerüsteten Gegenstand.
 
 ## Besondere Räume
 
+In Tower of Text existieren besondere Räume in Sackgassen diese können der end Room sein um auf eine neue Ebene zu gelangen, ein shop room in dem man Gegenstände kaufen und verkaufen kann oder ein chest Room in dem Gegenstände liegen.
 ---
 
 ## Spielmechanik & Befehle
@@ -54,19 +55,12 @@ Mit dem Befehl `pickup [item class] [item id]` kann man einen Gegenstand aus dem
 ### drop 
 Der Befehl `drop [item class] [item id]` erlaubt es, einen Gegenstand aus dem Inventar wieder im aktuellen Raum abzulegen.
 
----
-
-## Ausrüstung
 
 ### equip 
 Der Befehl `equip [item class] [item id]` dient dazu, einen Gegenstand aus dem Inventar als aktive Ausrüstung zu verwenden. Mit diesem Befehl kann man beispielsweise eine Waffe oder Rüstung anlegen, um den Charakter im Kampf zu stärken und zu schützen. Es muss angegeben werden, welcher Gegenstand aus der Kategorie `[item class]` und mit welcher spezifischen ID ausgerüstet werden soll.
 
 ### unequip 
 Mit dem Befehl `unequip [item class]` hat man die Möglichkeit, einen aktuell ausgerüsteten Gegenstand wieder aus der aktiven Ausrüstung zu entfernen. Die Angabe `[item class]`, beispielsweise `weapon` oder `armor`, sorgt dafür, dass das Spiel weiß, welcher Gegenstand abgenommen werden soll. Nachdem der Befehl ausgeführt wurde, wird der Gegenstand in das Inventar zurückgelegt und steht weiterhin zur Verfügung.
-
----
-
-## Verbrauchsgegenstände
 
 ### use 
 Der Befehl `use [consumable id]` ermöglicht es, einen Verbrauchsgegenstand aus dem Inventar zu aktivieren. Verbrauchsgegenstände können z.B. Heiltränke sein. Durch die Angabe der eindeutigen ID des Verbrauchsgegenstands wird dieser aktiviert und seine Effekte treten in Kraft. Es ist wichtig zu beachten, dass einige Verbrauchsgegenstände auch negative Nebenwirkungen haben können, wenn sie falsch verwendet werden.
