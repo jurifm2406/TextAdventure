@@ -28,7 +28,7 @@ Ein x markiert den ausgerüsteten Gegenstand.
 
 ## Besondere Räume
 
-In Tower of Text existieren besondere Räume in Sackgassen diese können der end Room sein um auf eine neue Ebene zu gelangen, ein shop room in dem man Gegenstände kaufen und verkaufen kann oder ein chest Room in dem Gegenstände liegen.
+In Tower of Text existieren besondere Räume in Sackgassen, diese können der end Room sein um auf eine neue Ebene zu gelangen, ein shop room in dem man Gegenstände kaufen und verkaufen kann oder ein chest Room in dem Gegenstände liegen.
 
 
 ## Spielmechanik & Befehle
