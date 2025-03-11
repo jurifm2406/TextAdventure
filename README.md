@@ -2,7 +2,7 @@
 ## Beschreibung
 Tower of Text ist ein textbasierter roadlike Dungeon crawler. 
 Es kann durch Ausführen der Textadventure.jar Datei gestartet werden.
-<hr>
+
 
 ## Überblick
 In Tower of Text gibt der Spieler dem Spiel durch Textbefehle Anweisungen. Man bewegt sich durch ein zufällig generiertes Dungeon, 
@@ -11,7 +11,7 @@ Der Dungeon besteht aus mehreren Ebenen, welche immer stärkere Gegenstände und
 Von den Coins kann man sich in einem Shop die Gegenstände einer Ebene kaufen.
 Man findet Gegenstände auch im ersten Raum des Dungeon und in sogenannten "Chest rooms".
 Um eine Ebene aufzusteigen, muss man sich in einem sogenannten "End room" befinden.
-<hr>
+
 
 ## GUI Erklärung
 <img src="res/GUI.png" alt="UI" width="500">
@@ -24,18 +24,17 @@ Ein raum gilt als bekannt, wenn man einmal in einem Nachbar des Raums oder dem R
 Das o zeigt den Raum an in dem man sich gerade befindet.
 Der untere linke Teil besteht aus den Inventarinformationen, sowie der Ebenen-, Lebens und Goldcoin-Information
 Ein x markiert den ausgerüsteten Gegenstand.
-<hr>
+
 
 ## Besondere Räume
 
 In Tower of Text existieren besondere Räume in Sackgassen diese können der end Room sein um auf eine neue Ebene zu gelangen, ein shop room in dem man Gegenstände kaufen und verkaufen kann oder ein chest Room in dem Gegenstände liegen.
----
+
 
 ## Spielmechanik & Befehle
 
 In diesem Dokument findet man eine detaillierte Beschreibung aller verfügbaren Befehle in *Textadventure*. Jeder Befehl wird in einem Fließtext erläutert, sodass man genau versteht, wie er korrekt eingesetzt wird und welche Funktion dahintersteht.
 
----
 
 ## Bewegung 
 
@@ -45,7 +44,6 @@ Der Befehl `move [direction]` ermöglicht es, den Charakter in eine bestimmte Ri
 ### climb
 Der Befehl `climb` ist speziell für den Einsatz in sogenannten End-Räumen konzipiert, in denen man sich befindet, wenn man bereit ist, zur nächsten Ebene des Dungeons aufzusteigen.
 
----
 
 ## Inventar & Gegenstände
 
@@ -65,14 +63,12 @@ Mit dem Befehl `unequip [item class]` hat man die Möglichkeit, einen aktuell au
 ### use 
 Der Befehl `use [consumable id]` ermöglicht es, einen Verbrauchsgegenstand aus dem Inventar zu aktivieren. Verbrauchsgegenstände können z.B. Heiltränke sein. Durch die Angabe der eindeutigen ID des Verbrauchsgegenstands wird dieser aktiviert und seine Effekte treten in Kraft. Es ist wichtig zu beachten, dass einige Verbrauchsgegenstände auch negative Nebenwirkungen haben können, wenn sie falsch verwendet werden.
 
----
 
 ## Raum-Interaktionen
 
 ### inspect
 Der Befehl `inspect` erlaubt es, den aktuellen Raum genauer zu untersuchen. Beim Ausführen dieses Befehls erhält man detaillierte Informationen über die Gegenstände aus dem Raum, in dem man sich befindet.
 
----
 
 ## Shop-Interaktionen
 
@@ -85,41 +81,33 @@ Mit dem Befehl `shop buy [item class] [item id]` kann man in einem Shop einen Ge
 ### shop info
 Der Befehl `shop info` liefert eine Übersicht über alle im Shop verfügbaren Gegenstände, jeder Gegenstand kostet 150 Coins.
 
----
+
 ## Kampfbefehle
 Die Kämpfe sind Rundenbasiert. Innerhalb einer Runde hat man eine bestimmte Anzahl von Aktionspunkten. Beendet man seinen Zug greift der Gegner an. Besiegt man den Gegner erhält man Coins. Stirbt man während des Kampfs wird das Spiel zurückgesetzt.
-
----
 
 ### attack
 
 Der Befehl `attack` ermöglicht es, einem Gegner direkten Schaden zuzufügen. Die Höhe des Schadens richtet sich dabei nach der aktuell ausgerüsteten Waffe, und es werden Aktionspunkte verbraucht, die von den Eigenschaften der Waffe abhängen. Hierbei kann auch zufällig eine Möglichkeit für kritischen Schaden ausgelöst werden, hierbei muss man so schnell wie möglich eine zufällige Reihenfolge von Buchstaben eintippen und erhält basierend auf seiner Genauigkeit und Zeit einen Schadensmultiplikator.
 
----
 
 ### defend
 
 Mit dem Befehl `defend` wird die defensive Stellung des Charakters verbessert. Dieser Befehl aktiviert die Schutzwirkung der getragenen Rüstung, wodurch ein Teil des eingehenden Schadens absorbiert wird. Es werden Aktionspunkte verbraucht, die von den Eigenschaften der Rüstung abhängen.
 
----
 
 ### use
 
 Der Befehl `use [item ID]` dient dazu, einen Verbrauchsgegenstand im Kampf einzusetzen. Verbrauchsgegenstände können zum Beispiel Heiltränke sein. Beim Ausführen dieses Befehls muss man die spezifische ID des Verbrauchsgegenstands angeben, um ihn korrekt zu aktivieren.
 
----
 
 ### escape
 
 Der Befehl `escape` erlaubt es, während eines Kampfes zu versuchen, der Auseinandersetzung zu entkommen. Allerding besteht auch die Möglichkeit, dass der Fluchtversuch fehlschlägt, ist dies der Fall macht der Gegner dreifachen Schaden im nächsten Zug. Der Fluchtversuch kostet ebenfalls Aktionspunkte.
 
----
 
 ### end
 
 Der Befehl `end` beendet den eigenen Zug während eines Kampfes. Mit diesem Befehl signalisiert man dem Spiel, dass keine weiteren Aktionen in diesem Zug durchgeführt werden sollen. 
-
----
 
 Alle Befehle sind auch über den help command im Spiel erklärt. Wobei die Kampf Befehle nur innerhalb eines Kampfes angezeigt werden.
 
