@@ -1,7 +1,6 @@
 package view
 
 import model.Model
-import view.content.Content
 import java.awt.BorderLayout
 import java.awt.Dimension
 import javax.swing.JFrame

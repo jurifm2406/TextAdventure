@@ -1,5 +1,6 @@
-package view.content
+package view
 
+import view.content.Sidebar
 import java.awt.BorderLayout
 import java.awt.Point
 import javax.swing.*
