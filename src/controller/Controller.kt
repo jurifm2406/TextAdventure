@@ -91,6 +91,7 @@ class Controller {
         // loading initial data from model to view
         updateMap()
         updateInfo()
+        respond("Welcome to Tower of Text")
     }
 
     /**
@@ -762,7 +763,7 @@ class Controller {
 
     // resetting everything back to the beginning when hero dies
     private fun heroDeath() {
-        respond("you died! the next hero approaches to tower.")
+        respond("you died! the next hero approaches the tower.")
         model.floor = 0
         model.map = Map(model.mapSize, model.floor)
         model.hero = Hero("", model.map.startRoom)
